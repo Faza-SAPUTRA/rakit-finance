@@ -19,9 +19,29 @@ def utility_processor():
     return {"rupiah": rupiah}
 
 
-@dashboard_bp.route("/")
+@landing_bp.route("/")
 def home():
     return render_template("landing/index.html")
+
+
+@landing_bp.route("/features")
+def features():
+    return render_template("landing/features.html")
+
+
+@landing_bp.route("/how-it-works")
+def how_it_works():
+    return render_template("landing/how_it_works.html")
+
+
+@landing_bp.route("/why-rakit")
+def why_rakit():
+    return render_template("landing/why_rakit.html")
+
+
+@landing_bp.route("/pricing")
+def pricing():
+    return render_template("landing/pricing.html")
 
 
 class OverviewView(MethodView):
@@ -77,4 +97,3 @@ def settings():
 
 
 dashboard_bp.add_url_rule("/dashboard", view_func=OverviewView.as_view("overview"))
-

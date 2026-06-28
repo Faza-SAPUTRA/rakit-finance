@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Rakit - How it works{% endblock %}
+{% block body %}
+<canvas id="particle-bg" class="fixed inset-0 -z-10 opacity-70"></canvas>
+{% include "partials/header.html" %}
+
+<main>
+  <section class="hero-surface px-6 py-24">
+    <div class="mx-auto max-w-7xl">
+      <p class="reveal inline-flex rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-primary shadow-card">How it works</p>
+      <h1 class="hero-title mt-6 max-w-4xl text-5xl font-extrabold leading-[1.02] md:text-7xl">Three steps from raw money data to decisions.</h1>
+      <p class="reveal mt-6 max-w-2xl text-lg leading-8 text-charcoal/75">The product flow is grounded in real Flask routes: import preview/confirm, receipt scan/save, and investment projection APIs.</p>
+    </div>
+  </section>
+
+  <section id="how" class="bg-offwhite px-6 py-24">
+    <div class="mx-auto max-w-6xl">
+      <h2 class="text-center text-4xl font-extrabold">Three steps to financial clarity.</h2>
+      <div class="how-steps-3d relative mt-14 grid gap-6 md:grid-cols-3">
+        <svg class="connector absolute left-[16%] top-9 hidden h-16 w-2/3 md:block" viewBox="0 0 600 80" fill="none">
+          <path d="M5 40 C 160 0, 260 80, 595 40" stroke="#0F5C3F" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        {% set steps = [
+          ("Connect or import", "Use /smart-import to upload BCA or GoPay CSV/Excel files. /api/import/preview parses rows through the matching parser, then /api/import/confirm saves approved transactions."),
+          ("Scan and confirm", "Use /receipt-scanner to upload an image. /api/receipt/scan calls OCRService, and /api/receipt/save persists the confirmed merchant, date, amount, and category."),
+          ("Simulate and decide", "Use /investment-simulator to submit an instrument, principal, contribution, and years. /api/investment/project returns subclass-specific projections for the chart.")
+        ] %}
+        {% for title, body in steps %}
+        <div class="how-step-card reveal relative rounded-[24px] border border-line bg-white p-7 text-center shadow-card">
+          <div class="mx-auto grid size-16 place-items-center rounded-full bg-primary text-xl font-black text-white">{{ loop.index }}</div>
+          <h3 class="mt-5 font-extrabold">{{ title }}</h3>
+          <p class="mt-4 text-sm leading-7 text-charcoal/70">{{ body }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 py-24">
+    <div class="grid gap-6 md:grid-cols-3">
+      {% for label, value in [("Import routes", "/api/import/preview"), ("Receipt routes", "/api/receipt/scan"), ("Projection route", "/api/investment/project")] %}
+      <article class="reveal rounded-[24px] border border-line bg-white p-7 shadow-card">
+        <p class="text-sm font-bold text-muted">{{ label }}</p>
+        <p class="mt-4 font-extrabold text-primary">{{ value }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+
+{% include "partials/footer.html" %}
+{% endblock %}

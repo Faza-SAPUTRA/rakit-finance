@@ -34,7 +34,8 @@
         }
       }
     </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    {% set static_version = "20260628-menu-fix-v1" %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=static_version) }}">
     {% block head %}{% endblock %}
   </head>
   <body class="bg-white text-black antialiased">
@@ -43,12 +44,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{ url_for('static', filename='js/react-bits-effects.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/anime-animations.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/gsap-animations.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/react-bits-effects.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/anime-animations.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/gsap-animations.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/staggered-menu.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/scroll-stack.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js', v=static_version) }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js', v=static_version) }}"></script>
     {% block scripts %}{% endblock %}
   </body>
 </html>
-

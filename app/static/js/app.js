@@ -7,6 +7,13 @@
     document.documentElement.classList.toggle("dark");
   });
 
+  const mobileSidebar = document.getElementById("mobile-sidebar");
+  const openMobileSidebar = () => mobileSidebar?.classList.remove("hidden");
+  const closeMobileSidebar = () => mobileSidebar?.classList.add("hidden");
+  document.getElementById("mobile-sidebar-open")?.addEventListener("click", openMobileSidebar);
+  document.getElementById("mobile-sidebar-close")?.addEventListener("click", closeMobileSidebar);
+  document.getElementById("mobile-sidebar-backdrop")?.addEventListener("click", closeMobileSidebar);
+
   const search = document.getElementById("table-search");
   search?.addEventListener("input", () => {
     const term = search.value.toLowerCase();
@@ -111,4 +118,3 @@
 
   document.getElementById("investment-form")?.dispatchEvent(new Event("submit"));
 })();
-

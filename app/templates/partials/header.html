@@ -1,0 +1,51 @@
+{% set landing_nav = [
+  ('landing.features', 'Features'),
+  ('landing.how_it_works', 'How it works'),
+  ('landing.why_rakit', 'Why Rakit'),
+  ('landing.pricing', 'Pricing')
+] %}
+<header class="sticky top-0 z-40 border-b border-line/70 bg-white/80 backdrop-blur-xl">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <a href="{{ url_for('landing.home') }}" class="flex items-center gap-3 font-extrabold text-xl">
+      <span class="grid size-9 place-items-center rounded-2xl bg-primary text-white">R</span> Rakit
+    </a>
+    <div class="hidden items-center gap-7 text-sm font-bold text-charcoal/75 lg:flex">
+      {% for endpoint, label in landing_nav %}
+      <a class="relative py-2 transition hover:text-primary {{ 'text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-primary' if request.endpoint == endpoint else '' }}" href="{{ url_for(endpoint) }}">{{ label }}</a>
+      {% endfor %}
+    </div>
+    <button id="staggered-menu-open" class="staggered-menu-trigger hidden items-center gap-3 rounded-full border border-line bg-white px-4 py-2 text-sm font-extrabold text-charcoal shadow-card md:flex" type="button" aria-controls="staggered-menu" aria-expanded="false">
+      <span class="staggered-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Menu</span>
+    </button>
+    <div class="flex items-center gap-3">
+      <a class="hidden text-sm font-semibold md:inline" href="{{ url_for('auth.login') }}">Log in</a>
+      <a class="magnetic-btn rounded-full bg-primary px-5 py-3 text-sm font-bold text-white shadow-glow" href="{{ url_for('auth.register') }}">Get Started</a>
+      <button id="staggered-menu-open-mobile" class="staggered-menu-trigger flex size-11 items-center justify-center rounded-full border border-line bg-white text-charcoal shadow-card md:hidden" type="button" aria-controls="staggered-menu" aria-expanded="false" aria-label="Open menu">
+        <span class="staggered-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div id="staggered-menu" class="staggered-menu pointer-events-none fixed inset-0 z-50 opacity-0" aria-hidden="true">
+  <button class="staggered-menu-backdrop absolute inset-0 bg-black/35 backdrop-blur-sm" type="button" aria-label="Close menu"></button>
+  <aside class="staggered-menu-panel absolute right-0 top-0 flex h-full w-full max-w-xl flex-col border-l border-line bg-offwhite px-7 py-7 shadow-glow sm:px-10">
+    <div class="flex items-center justify-between">
+      <a href="{{ url_for('landing.home') }}" class="flex items-center gap-3 text-xl font-extrabold">
+        <span class="grid size-10 place-items-center rounded-2xl bg-primary text-white">R</span> Rakit
+      </a>
+      <button id="staggered-menu-close" class="staggered-menu-close grid size-11 place-items-center rounded-full border border-line bg-white" type="button" aria-label="Close menu">
+        <span class="staggered-close-icon" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+    <nav class="mt-20 flex flex-1 flex-col justify-center gap-4">
+      {% for endpoint, label in landing_nav %}
+      <a class="staggered-menu-link {{ 'text-primary' if request.endpoint == endpoint else '' }}" href="{{ url_for(endpoint) }}"><span>{{ label }}</span></a>
+      {% endfor %}
+      <a class="staggered-menu-link" href="{{ url_for('auth.login') }}"><span>Log in</span></a>
+      <a class="staggered-menu-link text-primary" href="{{ url_for('auth.register') }}"><span>Get Started</span></a>
+    </nav>
+    <p class="max-w-sm text-sm leading-6 text-muted">A premium Flask finance dashboard with imports, receipts, net worth, simulations, and analytics in one place.</p>
+  </aside>
+</div>

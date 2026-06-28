@@ -23,7 +23,7 @@ def create_app(config_class=Config):
         return db.session.get(User, int(user_id))
 
     from .routes.auth import auth_bp
-    from .routes.dashboard import dashboard_bp
+    from .routes.dashboard import dashboard_bp, landing_bp
     from .routes.transactions import transactions_bp
     from .routes.import_routes import import_bp
     from .routes.receipt_routes import receipt_bp
@@ -31,6 +31,7 @@ def create_app(config_class=Config):
     from .routes.analytics_routes import analytics_bp
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(landing_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(transactions_bp)
     app.register_blueprint(import_bp)
@@ -43,4 +44,3 @@ def create_app(config_class=Config):
     commands.register(app)
 
     return app
-

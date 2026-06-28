@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Rakit - Why Rakit{% endblock %}
+{% block body %}
+<canvas id="particle-bg" class="fixed inset-0 -z-10 opacity-70"></canvas>
+{% include "partials/header.html" %}
+
+<main>
+  <section class="hero-surface px-6 py-24">
+    <div class="mx-auto max-w-7xl">
+      <p class="reveal inline-flex rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-primary shadow-card">Why Rakit</p>
+      <h1 class="hero-title mt-6 max-w-4xl text-5xl font-extrabold leading-[1.02] md:text-7xl">Spreadsheet discipline, product-grade workflow.</h1>
+      <p class="reveal mt-6 max-w-2xl text-lg leading-8 text-charcoal/75">Rakit keeps the useful structure of personal finance tracking while replacing manual copy-paste work with focused dashboard modules.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 py-24">
+    <div class="rounded-[32px] border border-line bg-white p-8 shadow-glow md:p-12">
+      <h2 class="text-4xl font-extrabold">Why Rakit beats spreadsheet finance.</h2>
+      <div class="mt-8 grid overflow-hidden rounded-[24px] border border-line">
+        {% set rows = [
+          ("Manual import cleanup", "Source-specific BCA and GoPay parsers normalize files before saving."),
+          ("Receipt data entry", "OCR extracts merchant, date, and nominal for confirmation."),
+          ("Net-worth formulas", "AssetAccount and LiabilityAccount define signed contributions in code."),
+          ("Projection tabs", "Investment subclasses calculate projections by instrument type."),
+          ("Chart maintenance", "AnalyticsService feeds spending, portfolio, risk, and news views."),
+          ("Scattered workflow", "Import, scan, review, simulate, and analyze live in the same dashboard shell.")
+        ] %}
+        {% for spreadsheet, rakit in rows %}
+        <div class="grid gap-4 border-b border-line bg-white px-6 py-5 last:border-b-0 hover:bg-offwhite md:grid-cols-2">
+          <div>
+            <p class="text-xs font-extrabold uppercase text-muted">Spreadsheet friction</p>
+            <p class="mt-2 font-semibold">{{ spreadsheet }}</p>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold uppercase text-primary">Rakit workflow</p>
+            <p class="mt-2 font-semibold">{{ rakit }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include "partials/footer.html" %}
+{% endblock %}

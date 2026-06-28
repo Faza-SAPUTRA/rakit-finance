@@ -40,32 +40,49 @@
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     const count = Math.min(58, Math.floor(width / 28));
-    particles = Array.from({ length: count }, () => ({
+    particles = Array.from({ length: count }, createDepthParticle);
+  }
+
+  function createDepthParticle() {
+    const z = Math.random();
+    const depthScale = 0.35 + z * 1.65;
+    return {
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-    }));
+      z,
+      size: 0.8 + depthScale * 1.3,
+      alpha: 0.05 + z * 0.22,
+      vx: (Math.random() - 0.5) * 0.12 * depthScale,
+      vy: (Math.random() - 0.5) * 0.12 * depthScale,
+    };
+  }
+
+  function wrapParticle(particle) {
+    if (particle.x < -20) particle.x = width + 20;
+    if (particle.x > width + 20) particle.x = -20;
+    if (particle.y < -20) particle.y = height + 20;
+    if (particle.y > height + 20) particle.y = -20;
   }
 
   function draw() {
     if (!running) return;
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "rgba(15,92,63,.18)";
-    ctx.strokeStyle = "rgba(15,92,63,.08)";
     particles.forEach((p, index) => {
       p.x += p.vx;
       p.y += p.vy;
-      if (p.x < 0 || p.x > width) p.vx *= -1;
-      if (p.y < 0 || p.y > height) p.vy *= -1;
+      wrapParticle(p);
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(15,92,63,${p.alpha})`;
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
       for (let j = index + 1; j < particles.length; j += 1) {
         const q = particles[j];
         const distance = Math.hypot(p.x - q.x, p.y - q.y);
-        if (distance < 115) {
-          ctx.globalAlpha = 1 - distance / 115;
+        const depthAffinity = 1 - Math.abs(p.z - q.z);
+        const maxDistance = 72 + depthAffinity * 82;
+        if (distance < maxDistance) {
+          ctx.globalAlpha = (1 - distance / maxDistance) * depthAffinity * 0.55;
+          ctx.strokeStyle = `rgba(15,92,63,${0.08 + ((p.z + q.z) / 2) * 0.12})`;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(q.x, q.y);
@@ -85,4 +102,3 @@
   resize();
   draw();
 })();
-
