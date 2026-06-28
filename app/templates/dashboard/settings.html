@@ -1,0 +1,13 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Settings{% endblock %}
+{% block dashboard_content %}
+<section class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+  <h2 class="text-xl font-extrabold">Profile</h2>
+  <div class="mt-6 grid gap-5 md:grid-cols-2">
+    <label class="block text-sm font-bold">Name<input class="mt-2 w-full rounded-2xl border-line" value="{{ current_user.name }}"></label>
+    <label class="block text-sm font-bold">Email<input class="mt-2 w-full rounded-2xl border-line" value="{{ current_user.email }}"></label>
+    <label class="flex items-center justify-between rounded-[24px] bg-offwhite p-5 font-bold md:col-span-2">Notifications<input class="rounded border-line text-primary" type="checkbox" checked></label>
+  </div>
+</section>
+{% endblock %}
+

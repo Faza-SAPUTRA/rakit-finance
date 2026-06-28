@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rakit - All your money. One dashboard.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191c1c",
+                    "surface-tint": "#236a4c",
+                    "secondary-fixed-dim": "#4ae183",
+                    "surface-dim": "#d9dad9",
+                    "on-secondary-fixed-variant": "#005228",
+                    "tertiary-container": "#515050",
+                    "inverse-surface": "#2e3131",
+                    "on-secondary-container": "#00743a",
+                    "on-error": "#ffffff",
+                    "surface": "#f9f9f8",
+                    "tertiary-fixed-dim": "#c9c6c5",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#002113",
+                    "tertiary-fixed": "#e5e2e1",
+                    "surface-container-high": "#e7e8e7",
+                    "secondary-fixed": "#6bfe9c",
+                    "on-primary-container": "#8cd2ad",
+                    "on-tertiary-container": "#c5c2c2",
+                    "outline": "#707972",
+                    "primary": "#00432b",
+                    "on-background": "#191c1c",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f0",
+                    "surface-variant": "#e1e3e2",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#00210c",
+                    "primary-fixed": "#aaf2cb",
+                    "tertiary": "#3a3939",
+                    "secondary-container": "#6bfe9c",
+                    "on-primary-fixed-variant": "#005236",
+                    "secondary": "#006d37",
+                    "primary-container": "#0f5c3f",
+                    "inverse-primary": "#8fd5b0",
+                    "on-tertiary-fixed-variant": "#474646",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f9f9f8",
+                    "primary-fixed-dim": "#8fd5b0",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#f3f4f3",
+                    "outline-variant": "#bfc9c1",
+                    "surface-container-highest": "#e1e3e2",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "background": "#f9f9f8",
+                    "surface-container": "#edeeed",
+                    "on-surface-variant": "#404943",
+                    "brand-accent-green": "#2ECC71", // Requested hex explicitly for accents/buttons
+                    "brand-muted-gray-green": "#8A9A92", // Requested explicitly
+                    "brand-black": "#0A0A0A"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "stack-md": "16px",
+                    "margin-page": "40px",
+                    "container-max": "1280px",
+                    "card-padding": "32px",
+                    "stack-lg": "24px",
+                    "section-gap": "80px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "financial-xl": [
+                            "Inter"
+                    ],
+                    "display-hero": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "headline-lg-mobile": [
+                            "Inter"
+                    ],
+                    "headline-lg": [
+                            "Inter"
+                    ],
+                    "data-mono": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "financial-xl": [
+                            "40px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-hero": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.04em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "data-mono": [
+                            "14px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            },
+            "boxShadow": {
+                'ambient-green': '0 30px 50px -12px hsla(150, 20%, 10%, 0.05), 0 20px 30px -10px rgba(46, 204, 113, 0.05)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .hero-perspective {
+            perspective: 1200px;
+        }
+        .hero-card {
+            transform: rotateY(-10deg) rotateX(5deg) scale(1.05);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+        .hero-card:hover {
+            transform: rotateY(-5deg) rotateX(2deg) scale(1.08);
+        }
+        /* Custom dot for logo */
+        .rakit-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ECC71;
+            border-radius: 50%;
+            margin-left: 2px;
+            vertical-align: baseline;
+        }
+    </style>
+</head>
+<body class="bg-[#FFFFFF] text-on-surface antialiased font-body-md text-body-md min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<nav class="sticky top-0 w-full z-50 bg-[#FFFFFF] bg-opacity-90 backdrop-blur-md shadow-sm border-b border-surface-variant/20">
+<div class="flex justify-between items-center px-margin-page py-4 max-w-container-max mx-auto">
+<!-- Brand Logo -->
+<div class="flex items-baseline cursor-pointer">
+<span class="font-headline-lg text-headline-lg font-extrabold text-[#0A0A0A] tracking-tighter">Rakit</span><span class="rakit-dot"></span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex space-x-8">
+<!-- Using semantic logic, none are strictly active for a landing page, but making first 'inactive' styling based on JSON -->
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md font-medium" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md font-medium" href="#">How it works</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md font-medium" href="#">Pricing</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center space-x-6">
+<a class="hidden md:block text-brand-black hover:text-primary transition-colors duration-200 font-body-md text-body-md font-medium" href="#">Log in</a>
+<button class="bg-[#2ECC71] hover:bg-[#27ae60] text-on-primary rounded-full px-6 py-2.5 font-body-md text-body-md font-medium transition-colors shadow-sm">
+                    Get Started
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex items-center relative overflow-hidden">
+<!-- Background Soft Glow Effect -->
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#2ECC71] rounded-full mix-blend-multiply filter blur-[120px] opacity-[0.03] pointer-events-none z-0"></div>
+<div class="max-w-container-max mx-auto w-full px-margin-page py-section-gap grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+<!-- Left Column: Hero Content -->
+<div class="flex flex-col space-y-8 max-w-xl">
+<h1 class="font-display-hero text-display-hero text-brand-black tracking-tighter">
+                    All your money.<br/>
+<span class="text-primary-container">One dashboard.</span>
+</h1>
+<p class="font-body-md text-[18px] leading-relaxed text-brand-muted-gray-green">
+                    Rakit aggregates your bank accounts, e-wallets, investments, and debts into a single, unified view. Stop switching tabs and start taking control of your financial future.
+                </p>
+<div class="pt-4">
+<button class="bg-[#2ECC71] hover:bg-[#27ae60] text-on-primary rounded-full px-8 py-4 font-body-md text-[18px] font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-2">
+<span>Get Started</span>
+<span class="material-symbols-outlined text-sm font-bold" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Right Column: Visual -->
+<div class="hero-perspective hidden lg:flex justify-center items-center relative h-[600px]">
+<!-- Floating UI Card -->
+<div class="hero-card bg-[#FFFFFF] rounded-2xl w-[420px] shadow-ambient-green border border-surface-variant/30 p-card-padding flex flex-col relative before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/50 before:pointer-events-none">
+<!-- Header -->
+<div class="flex justify-between items-center mb-8">
+<span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Total Net Worth</span>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Balance -->
+<div class="mb-10">
+<div class="font-financial-xl text-financial-xl text-brand-black tabular-nums tracking-tight">
+                            $248,590<span class="text-outline-variant">.00</span>
+</div>
+<div class="flex items-center space-x-1 mt-2 text-[#2ECC71] font-data-mono text-data-mono">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+<span>+2.4% this month</span>
+</div>
+</div>
+<!-- Chart Mockup (Donut) -->
+<div class="flex justify-center mb-10 relative">
+<!-- SVG Donut Chart -->
+<svg class="w-32 h-32 transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background ring -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#F7F8F7" stroke-width="12"></circle>
+<!-- Segment 1: Investments (Primary Green) -->
+<circle class="transition-all duration-1000 ease-out" cx="50" cy="50" fill="transparent" r="40" stroke="#0F5C3F" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" stroke-width="12"></circle>
+<!-- Segment 2: Cash (Accent Green) -->
+<circle class="transition-all duration-1000 ease-out delay-300" cx="50" cy="50" fill="transparent" r="40" stroke="#2ECC71" stroke-dasharray="251.2" stroke-dashoffset="200" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Center Value -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-label-caps text-[10px] text-outline">Assets</span>
+<span class="font-data-mono text-[14px] text-brand-black">3</span>
+</div>
+</div>
+<!-- Recent Transactions -->
+<div class="flex flex-col space-y-4">
+<h3 class="font-body-sm text-body-sm text-brand-black font-semibold mb-2">Recent Activity</h3>
+<!-- Transaction Row 1 -->
+<div class="flex justify-between items-center py-3 border-b border-[#8A9A92]/15">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-mono text-data-mono text-brand-black">Vanguard ETF</span>
+<span class="font-body-sm text-[12px] text-brand-muted-gray-green">Investment</span>
+</div>
+</div>
+<span class="font-data-mono text-data-mono text-brand-black tabular-nums">+$4,200.00</span>
+</div>
+<!-- Transaction Row 2 -->
+<div class="flex justify-between items-center py-3">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-mono text-data-mono text-brand-black">Whole Foods</span>
+<span class="font-body-sm text-[12px] text-brand-muted-gray-green">Groceries</span>
+</div>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface-variant tabular-nums">-$142.50</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Component (Minimal representation as requested by shared components context, though task mainly asked for Hero) -->
+<!-- Assuming footer is not explicitly required for just the hero task, but including to fulfill component usage if needed. Will keep it simple. -->
+</body></html>

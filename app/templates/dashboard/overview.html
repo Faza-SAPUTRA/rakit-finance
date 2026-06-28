@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Overview{% endblock %}
+{% block dashboard_content %}
+<section class="grid gap-6 xl:grid-cols-[1.25fr_.75fr]">
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <p class="text-sm font-bold text-muted">Net worth</p>
+    <p class="counter mt-4 text-5xl font-extrabold tabular-nums" data-prefix="Rp " data-target="{{ (summary.net_worth_cents / 100)|int }}">0</p>
+    <p class="mt-3 text-sm text-muted">Assets minus liabilities across every connected account.</p>
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-[24px] bg-offwhite p-6">
+        <p class="text-sm font-bold text-muted">Assets</p>
+        <p class="mt-3 text-3xl font-extrabold">{{ summary.assets_cents|rupiah }}</p>
+      </div>
+      <div class="rounded-[24px] bg-black p-6 text-white">
+        <p class="text-sm font-bold text-white/60">Liabilities</p>
+        <p class="mt-3 text-3xl font-extrabold">{{ summary.liabilities_cents|rupiah }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <div class="flex items-center justify-between">
+      <h2 class="font-extrabold">Spend categories</h2>
+      <span class="material-symbols-outlined text-primary">donut_large</span>
+    </div>
+    <canvas id="spendingChart" class="mt-6"></canvas>
+  </div>
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[.75fr_1.25fr]">
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <h2 class="font-extrabold">Quick actions</h2>
+    <div class="mt-6 grid gap-3">
+      <a href="{{ url_for('dashboard.receipt_scanner') }}" class="flex items-center justify-between rounded-2xl bg-primary px-5 py-4 font-bold text-white"><span>Scan Receipt</span><span class="material-symbols-outlined">document_scanner</span></a>
+      <a href="{{ url_for('dashboard.smart_import') }}" class="flex items-center justify-between rounded-2xl bg-offwhite px-5 py-4 font-bold"><span>Import File</span><span class="material-symbols-outlined text-primary">upload_file</span></a>
+    </div>
+  </div>
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="font-extrabold">Recent transactions</h2>
+      <a class="text-sm font-bold text-primary" href="{{ url_for('dashboard.transactions_page') }}">View all</a>
+    </div>
+    <div class="space-y-3">
+      {% for tx in transactions %}
+      <div class="flex items-center justify-between rounded-2xl bg-offwhite px-4 py-3">
+        <div><p class="font-bold">{{ tx.merchant }}</p><p class="text-sm text-muted">{{ tx.category }} · {{ tx.occurred_on }}</p></div>
+        <p class="font-extrabold tabular-nums {{ 'text-primary' if tx.transaction_type == 'income' else 'text-black' }}">{{ tx.display_amount }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

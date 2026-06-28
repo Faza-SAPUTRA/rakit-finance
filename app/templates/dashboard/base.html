@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="min-h-screen bg-offwhite text-black">
+  <aside class="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-line bg-white/95 p-5 backdrop-blur lg:block">
+    <a href="{{ url_for('dashboard.overview') }}" class="flex items-center gap-3 text-xl font-extrabold">
+      <span class="grid size-10 place-items-center rounded-2xl bg-primary text-white">R</span> Rakit
+    </a>
+    <nav class="mt-10 space-y-2">
+      {% set nav = [
+        ('dashboard.overview','dashboard','Overview'),
+        ('dashboard.transactions_page','receipt_long','Transactions'),
+        ('dashboard.smart_import','upload_file','Smart Import'),
+        ('dashboard.receipt_scanner','document_scanner','Receipt Scanner'),
+        ('dashboard.assets_liabilities','account_balance_wallet','Assets & Liabilities'),
+        ('dashboard.investment_simulator','trending_up','Investment Simulator'),
+        ('dashboard.market_analytics','donut_large','Market Analytics'),
+        ('dashboard.settings','settings','Settings')
+      ] %}
+      {% for endpoint, icon, label in nav %}
+      <a href="{{ url_for(endpoint) }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition {{ 'bg-primary text-white shadow-glow' if request.endpoint == endpoint else 'text-charcoal/75 hover:bg-offwhite hover:text-black' }}">
+        <span class="material-symbols-outlined text-[20px]">{{ icon }}</span>{{ label }}
+      </a>
+      {% endfor %}
+    </nav>
+    <div class="absolute bottom-5 left-5 right-5 rounded-[24px] bg-black p-5 text-white">
+      <p class="text-sm font-bold">Demo account</p>
+      <p class="mt-2 text-xs leading-6 text-white/65">Backend demonstrates inheritance and polymorphism in accounts, parsers, and investments.</p>
+    </div>
+  </aside>
+
+  <div class="lg:pl-72">
+    <header class="sticky top-0 z-20 border-b border-line bg-white/80 px-5 py-4 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-extrabold uppercase text-muted">{% block eyebrow %}Dashboard{% endblock %}</p>
+          <h1 class="text-2xl font-extrabold">{% block page_title %}Overview{% endblock %}</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="hidden items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm md:flex">
+            <span class="material-symbols-outlined text-muted">search</span>
+            <input class="w-48 border-0 bg-transparent p-0 text-sm focus:ring-0" placeholder="Search money...">
+          </label>
+          <button class="grid size-10 place-items-center rounded-full border border-line bg-white"><span class="material-symbols-outlined text-[20px]">notifications</span></button>
+          <button id="theme-toggle" class="grid size-10 place-items-center rounded-full border border-line bg-white"><span class="material-symbols-outlined text-[20px]">routine</span></button>
+          <a href="{{ url_for('auth.logout') }}" class="hidden rounded-full bg-primary px-4 py-2 text-sm font-bold text-white md:inline">Log out</a>
+        </div>
+      </div>
+    </header>
+    <main class="mx-auto max-w-7xl px-5 py-8">
+      {% block dashboard_content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

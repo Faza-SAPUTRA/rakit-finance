@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rakit - Receipt Scanner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006d37",
+                        "inverse-on-surface": "#f0f1f0",
+                        "surface-tint": "#236a4c",
+                        "tertiary": "#3a3939",
+                        "on-tertiary-fixed-variant": "#474646",
+                        "on-secondary-fixed-variant": "#005228",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#404943",
+                        "on-secondary-fixed": "#00210c",
+                        "outline": "#707972",
+                        "on-secondary-container": "#00743a",
+                        "surface-container-highest": "#e1e3e2",
+                        "outline-variant": "#bfc9c1",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8cd2ad",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f9f9f8",
+                        "surface-dim": "#d9dad9",
+                        "primary": "#00432b",
+                        "secondary-container": "#6bfe9c",
+                        "primary-container": "#0f5c3f",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#c5c2c2",
+                        "tertiary-container": "#515050",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191c1c",
+                        "inverse-surface": "#2e3131",
+                        "surface-container-low": "#f3f4f3",
+                        "surface-container-high": "#e7e8e7",
+                        "on-surface": "#191c1c",
+                        "inverse-primary": "#8fd5b0",
+                        "secondary-fixed-dim": "#4ae183",
+                        "primary-fixed-dim": "#8fd5b0",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-bright": "#f9f9f8",
+                        "on-primary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#c9c6c5",
+                        "secondary-fixed": "#6bfe9c",
+                        "primary-fixed": "#aaf2cb",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9f8",
+                        "surface-container": "#edeeed",
+                        "surface-variant": "#e1e3e2",
+                        "brand-accent": "#2ECC71"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "80px",
+                        "margin-page": "40px",
+                        "card-padding": "32px",
+                        "stack-md": "16px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "financial-xl": ["Inter"],
+                        "display-hero": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "financial-xl": ["40px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-hero": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .scanner-line {
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col py-stack-lg fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest shadow-[30px_0_50px_-20px_hsla(150,20%,10%,0.05)] z-50">
+<div class="px-gutter mb-section-gap flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary font-bold text-xl">R</div>
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Rakit</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Premium Finance</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-1 px-4">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-body-md text-body-md font-medium">Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+<span class="font-body-md text-body-md font-medium">Transactions</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">cloud_upload</span>
+<span class="font-body-md text-body-md font-medium">Smart Import</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 border-secondary text-primary font-bold bg-surface-container-low cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span class="font-body-md text-body-md font-medium">Receipt Scanner</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_balance_wallet</span>
+<span class="font-body-md text-body-md font-medium">Assets &amp; Liabilities</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">query_stats</span>
+<span class="font-body-md text-body-md font-medium">Investment Simulator</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+<span class="font-body-md text-body-md font-medium">Market Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-body-md text-body-md font-medium">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-[280px] flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 w-full flex justify-between items-center px-margin-page py-stack-md bg-surface border-b border-surface-variant">
+<div class="flex items-center bg-surface-container-lowest rounded-full px-4 py-2 border border-outline-variant w-96 shadow-sm focus-within:border-brand-accent focus-within:ring-2 focus-within:ring-brand-accent/20 transition-all">
+<span class="material-symbols-outlined text-outline mr-2" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="bg-transparent border-none outline-none w-full text-body-md font-body-md text-on-surface placeholder-outline-variant focus:ring-0 p-0" placeholder="Search transactions, receipts..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full text-on-surface-variant hover:text-secondary hover:bg-surface-container-highest transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:text-secondary hover:bg-surface-container-highest transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+</button>
+<img alt="User profile photo" class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a young professional in a modern, well-lit office setting. The lighting is soft and natural, emphasizing a bright, trustworthy, and modern corporate aesthetic. High resolution, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsTEz6NCNQsJqvNFAE5tm-AabETS-IcCtwBTvu4GUnUF82r9C3dLyd7ABfpw0IcLYzuMdsy8r_oD3hTJ1_GAgzUmu-UJMV5EDyt05fNyMLbARqpkd1i-ahgNmz5uipYTXWrH5H_TQ0CLv7Y73eQJ9grT1uVISraacqHK_tADWLxKPVQ1TioZCkrr3hWRXpUegi77ARoOG7hDfH0tEb3_gXfuiv4-6ZCihBUJIrMzIqnIx7Q0Oc3kZMOe5A9CJbaB2Ygb7pHjp_aA"/>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 px-margin-page py-section-gap max-w-container-max mx-auto w-full flex flex-col gap-section-gap">
+<!-- Page Header -->
+<div class="flex flex-col gap-stack-sm">
+<h2 class="font-display-hero text-display-hero text-on-primary-fixed">Receipt Scanner</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Upload receipts to automatically extract and categorize transactions using advanced OCR.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Upload Area (Left) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-card-padding shadow-[0_30px_50px_-20px_hsla(150,20%,10%,0.05)] border border-surface-variant flex flex-col h-full min-h-[500px]">
+<div class="flex-1 border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-8 bg-surface hover:bg-surface-container transition-colors duration-300 relative overflow-hidden group cursor-pointer">
+<!-- Decorative Background Elements -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #00432b 1px, transparent 0); background-size: 24px 24px;"></div>
+<!-- Visual Scanner Element (Hidden by default, shown on hover/active in a real app, keeping visible for UI design) -->
+<div class="relative w-48 h-64 bg-surface-container-lowest shadow-md rounded border border-surface-variant mb-8 overflow-hidden transform group-hover:scale-105 transition-transform duration-500 flex flex-col p-4 opacity-80">
+<div class="w-full h-4 bg-surface-variant rounded mb-4"></div>
+<div class="w-3/4 h-2 bg-surface-variant rounded mb-2"></div>
+<div class="w-1/2 h-2 bg-surface-variant rounded mb-6"></div>
+<div class="w-full border-t border-dashed border-outline-variant my-2"></div>
+<div class="flex justify-between w-full mb-2">
+<div class="w-1/3 h-2 bg-surface-variant rounded"></div>
+<div class="w-1/4 h-2 bg-surface-variant rounded"></div>
+</div>
+<div class="flex justify-between w-full mb-2">
+<div class="w-1/4 h-2 bg-surface-variant rounded"></div>
+<div class="w-1/3 h-2 bg-surface-variant rounded"></div>
+</div>
+<!-- Scanning Line -->
+<div class="absolute left-0 w-full h-[2px] bg-brand-accent shadow-[0_0_8px_2px_rgba(46,204,113,0.5)] scanner-line z-10"></div>
+</div>
+<span class="material-symbols-outlined text-4xl text-outline mb-4" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-center">Upload a photo of your receipt</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 text-center">Drag and drop, or browse your files. Supports JPG, PNG, PDF.</p>
+<button class="bg-brand-accent text-white px-6 py-3 rounded-full font-body-md text-body-md font-medium hover:bg-secondary transition-colors duration-300 shadow-sm active:scale-95 flex items-center gap-2 relative z-20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">upload_file</span>
+                            Browse Files
+                        </button>
+</div>
+</div>
+<!-- Extracted Details (Right) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-2xl p-card-padding shadow-[0_30px_50px_-20px_hsla(150,20%,10%,0.05)] border border-surface-variant flex flex-col h-full">
+<div class="flex items-center gap-3 mb-8 pb-4 border-b border-surface-variant">
+<span class="material-symbols-outlined text-brand-accent" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Extracted Details</h3>
+</div>
+<div class="flex flex-col gap-6 flex-1">
+<!-- Merchant Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Merchant Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 transition-all outline-none" type="text" value="Starbucks Coffee"/>
+</div>
+<!-- Date Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-4 pr-10 py-3 font-body-md text-body-md text-on-surface focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 transition-all outline-none" type="text" value="Oct 28, 2023"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" style="font-variation-settings: 'FILL' 0;">calendar_month</span>
+</div>
+</div>
+<!-- Category Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Category</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-4 pr-10 py-3 font-body-md text-body-md text-on-surface focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 transition-all outline-none appearance-none cursor-pointer">
+<option selected="" value="dining">Dining</option>
+<option value="groceries">Groceries</option>
+<option value="transport">Transport</option>
+<option value="utilities">Utilities</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" style="font-variation-settings: 'FILL' 0;">arrow_drop_down</span>
+</div>
+</div>
+<!-- Total Amount Field -->
+<div class="flex flex-col gap-2 mt-4 p-4 bg-surface rounded-xl border border-surface-variant">
+<label class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Total Amount</label>
+<div class="flex items-baseline gap-1">
+<span class="font-financial-xl text-financial-xl text-on-surface">Rp</span>
+<input class="bg-transparent border-none p-0 font-financial-xl text-financial-xl text-on-surface w-full focus:ring-0 outline-none tabular-nums font-bold" type="text" value="85.000"/>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-8 mt-auto">
+<button class="w-full bg-brand-accent text-white py-4 rounded-full font-body-md text-body-md font-semibold hover:bg-secondary transition-colors duration-300 shadow-sm active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Save Transaction
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

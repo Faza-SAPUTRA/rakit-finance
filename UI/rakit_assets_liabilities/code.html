@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rakit - Assets &amp; Liabilities</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f9f9f8",
+                        "surface": "#f9f9f8",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#8fd5b0",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#4ae183",
+                        "surface-dim": "#d9dad9",
+                        "surface-container": "#edeeed",
+                        "secondary-fixed": "#6bfe9c",
+                        "primary": "#00432b",
+                        "outline": "#707972",
+                        "inverse-on-surface": "#f0f1f0",
+                        "outline-variant": "#bfc9c1",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-surface-variant": "#404943",
+                        "on-primary-fixed-variant": "#005236",
+                        "surface-variant": "#e1e3e2",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#191c1c",
+                        "background": "#f9f9f8",
+                        "surface-container-high": "#e7e8e7",
+                        "on-tertiary-fixed-variant": "#474646",
+                        "tertiary": "#3a3939",
+                        "primary-container": "#0f5c3f",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#005228",
+                        "primary-fixed": "#aaf2cb",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#515050",
+                        "error": "#ba1a1a",
+                        "secondary": "#006d37",
+                        "on-secondary-fixed": "#00210c",
+                        "inverse-primary": "#8fd5b0",
+                        "surface-container-low": "#f3f4f3",
+                        "on-surface": "#191c1c",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-secondary-container": "#00743a",
+                        "tertiary-fixed-dim": "#c9c6c5",
+                        "on-tertiary-container": "#c5c2c2",
+                        "inverse-surface": "#2e3131",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface-tint": "#236a4c",
+                        "secondary-container": "#6bfe9c",
+                        "on-primary-container": "#8cd2ad",
+                        "brand-green": "#2ECC71"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "80px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "card-padding": "32px",
+                        "stack-lg": "24px",
+                        "margin-page": "40px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "display-hero": ["Inter"],
+                        "financial-xl": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-hero": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "financial-xl": ["40px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .rakit-shadow { box-shadow: 0 30px 50px -20px hsla(150, 20%, 10%, 0.05); }
+    </style>
+</head>
+<body class="bg-[#F7F8F7] text-on-surface min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest shadow-[30px_0_50px_-20px_hsla(150,20%,10%,0.05)] flex flex-col py-stack-lg z-50 hidden md:flex">
+<div class="px-gutter mb-section-gap flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-brand-green flex items-center justify-center text-white font-bold text-xl">R</div>
+<div>
+<div class="font-headline-lg text-headline-lg font-bold text-primary">Rakit</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Premium Finance</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2 px-stack-sm">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">receipt_long</span>
+<span>Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">cloud_upload</span>
+<span>Smart Import</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">document_scanner</span>
+<span>Receipt Scanner</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 border-secondary text-primary font-bold bg-surface-container-low cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined text-brand-green" style="font-variation-settings: 'wght' 400;">account_balance_wallet</span>
+<span>Assets &amp; Liabilities</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">query_stats</span>
+<span>Investment Simulator</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">analytics</span>
+<span>Market Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 cursor-pointer transition-all active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-[280px] min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 w-full bg-surface flex justify-between items-center px-margin-page py-stack-md">
+<div class="flex items-center gap-4 bg-white rounded-full px-4 py-2 border border-[#8A9A92]/20 focus-within:border-brand-green focus-within:ring-4 focus-within:ring-brand-green/10 transition-all w-96">
+<span class="material-symbols-outlined text-[#8A9A92]">search</span>
+<input class="bg-transparent border-none outline-none w-full font-body-md text-body-md placeholder-[#8A9A92] focus:ring-0" placeholder="Search transactions, accounts..." type="text"/>
+</div>
+<div class="flex items-center gap-stack-lg">
+<button class="text-on-surface-variant hover:text-brand-green transition-colors cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-brand-green transition-colors cursor-pointer">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-white shadow-sm overflow-hidden cursor-pointer">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmdzTgBshM6uddNi-BdQgXrWVDW3OliPW0sSeSISmz9841ruFHAXVjjGIMgTWj7GpdncQwN2jYZXCoCrRvZ6UXXG5KJjvTW5qlmZmlUcm1L71Z60VzANBoEx29BKeFi4AD3t7qy13O7ZgZFGzyKyQa7BfQL43Os9fv7y5pWGAFSqG4NKFB5hC5HkY_e_ARPbvQQ9dNIT_VxT6jyHwGd_8J7BuVWdms-dXsbCw3Shl5EvO98xFPMWdhb86nKCek9Kip7l4zGl4ZeA"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-margin-page pb-section-gap">
+<div class="max-w-[1200px] mx-auto">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-stack-lg">Assets &amp; Liabilities</h1>
+<!-- Summary Bar -->
+<div class="bg-white rounded-xl rakit-shadow p-card-padding flex items-center justify-between mb-section-gap">
+<div class="flex-1 text-center border-r border-[#8A9A92]/15">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Total Assets</p>
+<p class="font-financial-xl text-financial-xl text-brand-green">$142,500.00</p>
+</div>
+<div class="flex-1 text-center border-r border-[#8A9A92]/15">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Total Liabilities</p>
+<p class="font-financial-xl text-financial-xl text-on-surface">$12,450.00</p>
+</div>
+<div class="flex-1 text-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Net Worth</p>
+<p class="font-financial-xl text-financial-xl font-extrabold text-on-background">$130,050.00</p>
+</div>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Left Column: Assets -->
+<div>
+<div class="flex justify-between items-center mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-brand-green">Assets</h2>
+<button class="px-4 py-2 border border-brand-green text-brand-green rounded-lg font-body-sm text-body-sm hover:bg-brand-green/5 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span> Add account
+                            </button>
+</div>
+<div class="flex flex-col gap-stack-md">
+<!-- Card 1 -->
+<div class="bg-white rounded-xl rakit-shadow p-stack-lg flex items-center justify-between hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">payments</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Cash</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Wallet &amp; Safe</p>
+</div>
+</div>
+<p class="font-data-mono text-[18px] font-bold text-on-background">$2,500.00</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-xl rakit-shadow p-stack-lg flex items-center justify-between hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">account_balance</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Bank Balance</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">BCA Checking</p>
+</div>
+</div>
+<p class="font-data-mono text-[18px] font-bold text-on-background">$45,000.00</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-white rounded-xl rakit-shadow p-stack-lg flex items-center justify-between hover:-translate-y-1 transition-transform duration-300 border-l-4 border-brand-green">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center text-brand-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">trending_up</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Investments</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mutual Funds</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-data-mono text-[18px] font-bold text-on-background">$95,000.00</p>
+<p class="font-data-mono text-[12px] text-brand-green">+2.4% this month</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Liabilities -->
+<div>
+<div class="flex justify-between items-center mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background">Liabilities</h2>
+<button class="px-4 py-2 border border-[#8A9A92] text-[#8A9A92] rounded-lg font-body-sm text-body-sm hover:bg-[#8A9A92]/5 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span> Add account
+                            </button>
+</div>
+<div class="flex flex-col gap-stack-md">
+<!-- Card 1 -->
+<div class="bg-white rounded-xl rakit-shadow p-stack-lg flex items-center justify-between hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-on-background">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">credit_card</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Credit Card</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Platinum Rewards</p>
+</div>
+</div>
+<p class="font-data-mono text-[18px] font-medium text-on-background">$2,450.00</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-xl rakit-shadow p-stack-lg flex items-center justify-between hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-on-background">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 200;">real_estate_agent</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Personal Loan</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Home Renovation</p>
+</div>
+</div>
+<p class="font-data-mono text-[18px] font-medium text-on-background">$10,000.00</p>
+</div>
+<!-- Empty State Filler to match height if needed -->
+<div class="bg-transparent border border-dashed border-[#8A9A92]/30 rounded-xl p-stack-lg flex items-center justify-center text-[#8A9A92] font-body-sm text-body-sm h-[96px]">
+                                No other liabilities detected.
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,22 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Transactions{% endblock %}
+{% block dashboard_content %}
+<section class="rounded-[28px] border border-line bg-white p-6 shadow-card">
+  <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div><h2 class="text-xl font-extrabold">All transactions</h2><p class="text-sm text-muted">Filter, review, and audit imported spending.</p></div>
+    <input id="table-search" class="rounded-full border-line px-5" placeholder="Search transactions">
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[760px] text-left text-sm">
+      <thead class="text-xs uppercase text-muted">
+        <tr><th class="py-4">Merchant</th><th>Category</th><th>Date</th><th>Source</th><th class="text-right">Amount</th></tr>
+      </thead>
+      <tbody id="transaction-table" class="divide-y divide-line">
+        {% for tx in transactions %}
+        <tr class="hover:bg-offwhite"><td class="py-4 font-bold">{{ tx.merchant }}</td><td><span class="rounded-full bg-accent/10 px-3 py-1 font-bold text-primary">{{ tx.category }}</span></td><td>{{ tx.occurred_on }}</td><td>{{ tx.source }}</td><td class="text-right font-extrabold">{{ tx.display_amount }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

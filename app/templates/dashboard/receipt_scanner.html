@@ -1,0 +1,20 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Receipt Scanner{% endblock %}
+{% block dashboard_content %}
+<section class="grid gap-6 lg:grid-cols-[.85fr_1.15fr]">
+  <form id="receipt-form" class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <h2 class="text-xl font-extrabold">Scan a receipt</h2>
+    <p class="mt-2 text-sm text-muted">OCR extracts a first pass, then you confirm the transaction.</p>
+    <label class="mt-6 grid min-h-64 cursor-pointer place-items-center rounded-[24px] border-2 border-dashed border-line bg-offwhite p-6 text-center">
+      <input class="hidden" name="receipt" type="file" accept="image/*" required>
+      <span><span class="material-symbols-outlined text-5xl text-primary">document_scanner</span><span class="mt-3 block font-extrabold">Upload receipt image</span></span>
+    </label>
+    <button class="mt-6 w-full rounded-full bg-primary py-4 font-extrabold text-white">Run OCR</button>
+  </form>
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <h2 class="text-xl font-extrabold">Confirmation</h2>
+    <div id="receipt-result" class="mt-6 rounded-[24px] bg-offwhite p-5 text-sm text-muted">Receipt fields will appear here.</div>
+  </div>
+</section>
+{% endblock %}
+

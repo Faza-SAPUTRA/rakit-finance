@@ -1,0 +1,19 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Investment Simulator{% endblock %}
+{% block dashboard_content %}
+<section class="grid gap-6 lg:grid-cols-[.8fr_1.2fr]">
+  <form id="investment-form" class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <h2 class="text-xl font-extrabold">Projection inputs</h2>
+    <label class="mt-6 block text-sm font-bold">Instrument<select name="instrument" class="mt-2 w-full rounded-2xl border-line"><option value="mutual_fund">Reksa Dana</option><option value="gold">Gold</option><option value="crypto">Crypto</option></select></label>
+    <label class="mt-4 block text-sm font-bold">Initial amount<input name="amount" class="mt-2 w-full rounded-2xl border-line" value="10000000" type="number"></label>
+    <label class="mt-4 block text-sm font-bold">Monthly contribution<input name="contribution" class="mt-2 w-full rounded-2xl border-line" value="1000000" type="number"></label>
+    <label class="mt-4 block text-sm font-bold">Years<input name="years" class="mt-2 w-full rounded-2xl border-line" value="5" type="number" min="1" max="30"></label>
+    <button class="mt-6 w-full rounded-full bg-primary py-4 font-extrabold text-white">Calculate projection</button>
+  </form>
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <div class="flex items-center justify-between"><h2 class="text-xl font-extrabold">Projected growth</h2><span id="investment-risk" class="rounded-full bg-accent/10 px-3 py-1 text-sm font-bold text-primary">balanced</span></div>
+    <canvas id="investmentChart" class="mt-8"></canvas>
+  </div>
+</section>
+{% endblock %}
+

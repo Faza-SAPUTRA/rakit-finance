@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Log in - Rakit{% endblock %}
+{% block body %}
+<main class="auth-surface grid min-h-screen place-items-center overflow-hidden bg-offwhite px-6 py-12">
+  <section class="w-full max-w-md rounded-[28px] border border-line bg-white/90 p-8 shadow-glow backdrop-blur">
+    <a href="/" class="mb-8 flex items-center gap-3 text-xl font-extrabold"><span class="grid size-10 place-items-center rounded-2xl bg-primary text-white">R</span> Rakit</a>
+    <h1 class="text-3xl font-extrabold">Welcome back</h1>
+    <p class="mt-2 text-sm text-muted">Use demo@rakit.local and password after seeding.</p>
+    {% include "partials/flashes.html" ignore missing %}
+    <form class="mt-8 space-y-5" method="post">
+      <label class="block text-sm font-bold">Email<input class="mt-2 w-full rounded-2xl border-line" name="email" type="email" required></label>
+      <label class="block text-sm font-bold">Password<input class="mt-2 w-full rounded-2xl border-line" name="password" type="password" required></label>
+      <label class="flex items-center gap-2 text-sm text-charcoal/70"><input class="rounded border-line text-primary" name="remember" type="checkbox"> Remember me</label>
+      <button class="magnetic-btn w-full rounded-full bg-primary py-4 font-extrabold text-white shadow-glow">Log in</button>
+    </form>
+    <p class="mt-6 text-center text-sm text-muted">New to Rakit? <a class="font-bold text-primary" href="{{ url_for('auth.register') }}">Create account</a></p>
+  </section>
+</main>
+{% endblock %}

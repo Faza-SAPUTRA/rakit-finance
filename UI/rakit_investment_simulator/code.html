@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Investment Simulator - Rakit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#8fd5b0",
+                        "tertiary-container": "#515050",
+                        "on-tertiary-fixed-variant": "#474646",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e7e8e7",
+                        "secondary-fixed-dim": "#4ae183",
+                        "tertiary-fixed": "#e5e2e1",
+                        "primary-container": "#0f5c3f",
+                        "on-surface": "#191c1c",
+                        "on-secondary-fixed-variant": "#005228",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f0f1f0",
+                        "surface-container": "#edeeed",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-low": "#f3f4f3",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#3a3939",
+                        "secondary-fixed": "#6bfe9c",
+                        "surface-variant": "#e1e3e2",
+                        "on-secondary-fixed": "#00210c",
+                        "on-primary-container": "#8cd2ad",
+                        "on-secondary-container": "#00743a",
+                        "primary": "#00432b",
+                        "on-tertiary-container": "#c5c2c2",
+                        "secondary-container": "#6bfe9c",
+                        "surface-dim": "#d9dad9",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface": "#f9f9f8",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9f8",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-surface-variant": "#404943",
+                        "outline": "#707972",
+                        "primary-fixed-dim": "#8fd5b0",
+                        "secondary": "#006d37",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#bfc9c1",
+                        "tertiary-fixed-dim": "#c9c6c5",
+                        "on-background": "#191c1c",
+                        "background": "#f9f9f8",
+                        "surface-tint": "#236a4c",
+                        "inverse-surface": "#2e3131",
+                        "primary-fixed": "#aaf2cb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-padding": "32px",
+                        "stack-sm": "8px",
+                        "container-max": "1280px",
+                        "stack-md": "16px",
+                        "section-gap": "80px",
+                        "margin-page": "40px",
+                        "gutter": "24px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "financial-xl": ["Inter"],
+                        "display-hero": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "financial-xl": ["40px", { "lineHeight": "1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-hero": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #2ECC71;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0px 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #E1E3E2;
+            border-radius: 2px;
+        }
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #E1E3E2;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col py-stack-lg fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest dark:bg-surface-container-low shadow-[30px_0_50px_-20px_hsla(150,20%,10%,0.05)] z-50">
+<div class="px-gutter mb-section-gap flex items-center gap-stack-sm">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-body-sm fill" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed tracking-tight" style="font-size: 24px;">Rakit</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Premium Finance</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-2 px-4">
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md font-medium">Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-body-md text-body-md font-medium">Transactions</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+<span class="font-body-md text-body-md font-medium">Smart Import</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="document_scanner">document_scanner</span>
+<span class="font-body-md text-body-md font-medium">Receipt Scanner</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body-md text-body-md font-medium">Assets &amp; Liabilities</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg border-l-4 border-secondary text-primary font-bold bg-surface-container-low dark:bg-surface-container cursor-pointer transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined fill" data-icon="query_stats">query_stats</span>
+<span class="font-body-md text-body-md font-bold">Investment Simulator</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md font-medium">Market Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md font-medium">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="ml-0 md:ml-[280px] min-h-screen bg-[#F7F8F7] flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-margin-page py-stack-md w-full sticky top-0 z-40 bg-surface dark:bg-surface-dim">
+<div class="flex items-center">
+<div class="md:hidden font-headline-lg-mobile text-headline-lg-mobile font-extrabold text-primary dark:text-primary-fixed mr-4">Rakit</div>
+<!-- Search Bar -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-body-md" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 w-64 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:border-[#2ECC71] focus:ring-4 focus:ring-[#2ECC71]/10 transition-all" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors duration-200 cursor-pointer relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#ba1a1a] rounded-full"></span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant cursor-pointer ml-2">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a confident individual in corporate attire, set against a bright, modern, minimalist office background. High key lighting, 8k resolution, crisp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1C9IJqMrc_VmYdGYWRErXOrg0-TNiG7Fe9qmRdX4FFFhawr38AP9X3UuB1xezClVNXwpq4uxHqPC-pb4J_B1vJ-wgtJ4CiNAfN0uFouPCQaoWvI8vsTf6ZIAsrW2rpTRY8qM6zTnubAHbvI44lKYrJ5euUCfPrnNbrzenWF2hE94qXoc6UXnrxP7ycBw-LrTAzg8JjZPwNQVf0Gq-MRF44nmq5iBWjEZvx-RHItnmzOPEMhVM2E7g-3ybaj6F3BGeTI8JkbvexQ"/>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<main class="flex-1 p-margin-page">
+<!-- Page Header -->
+<div class="mb-section-gap">
+<h1 class="font-display-hero text-display-hero text-on-surface mb-stack-sm">Investment Simulator</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Project your wealth growth based on historical market performance.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Simulation Parameters (approx 40%) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-[20px] p-card-padding shadow-[0_30px_50px_-20px_hsla(150,20%,10%,0.05)] border border-surface-variant/50 flex flex-col h-full">
+<div class="flex items-center gap-2 mb-stack-lg">
+<span class="material-symbols-outlined text-primary" data-icon="tune">tune</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Simulation Parameters</h2>
+</div>
+<div class="space-y-stack-lg flex-1">
+<!-- Instrument Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Investment Instrument</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-10 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-[#2ECC71] focus:ring-4 focus:ring-[#2ECC71]/10 transition-all cursor-pointer">
+<option value="mutual_fund">Mutual Fund (Aggressive)</option>
+<option value="gold">Gold (Conservative)</option>
+<option value="crypto">Crypto (High Risk)</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary" data-icon="moving">moving</span>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Initial Investment Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Initial Investment</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-data-mono text-data-mono text-on-surface-variant">Rp</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-12 pr-4 py-3 font-data-mono text-data-mono text-on-surface text-lg focus:outline-none focus:border-[#2ECC71] focus:ring-4 focus:ring-[#2ECC71]/10 transition-all tabular-nums text-right" type="text" value="50.000.000"/>
+</div>
+</div>
+<!-- Monthly Contribution Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Monthly Contribution</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-data-mono text-data-mono text-on-surface-variant">Rp</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-12 pr-4 py-3 font-data-mono text-data-mono text-on-surface text-lg focus:outline-none focus:border-[#2ECC71] focus:ring-4 focus:ring-[#2ECC71]/10 transition-all tabular-nums text-right" type="text" value="5.000.000"/>
+</div>
+</div>
+<!-- Investment Duration Slider -->
+<div class="flex flex-col gap-4 mt-6">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Investment Duration</label>
+<span class="font-data-mono text-data-mono font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">10 Years</span>
+</div>
+<input class="w-full appearance-none bg-transparent" max="30" min="1" type="range" value="10"/>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant/60">
+<span>1 YR</span>
+<span>15 YR</span>
+<span>30 YR</span>
+</div>
+</div>
+</div>
+<!-- Simulate Button -->
+<button class="mt-section-gap w-full bg-[#2ECC71] hover:bg-[#27AE60] text-[#FFFFFF] font-body-md text-body-md font-bold py-4 rounded-full transition-all duration-200 shadow-[0_4px_14px_0_rgba(46,204,113,0.39)] hover:shadow-[0_6px_20px_rgba(46,204,113,0.23)] hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+                        Simulate Growth
+                    </button>
+</div>
+<!-- Right Column: Projected Growth (approx 60%) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-[20px] p-card-padding shadow-[0_30px_50px_-20px_hsla(150,20%,10%,0.05)] border border-surface-variant/50 flex flex-col relative overflow-hidden">
+<!-- Header & Large Value -->
+<div class="mb-stack-lg z-10">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-2">Estimated Value (10 Years)</h2>
+<div class="font-financial-xl text-financial-xl text-on-surface flex items-baseline gap-2">
+<span class="text-2xl text-on-surface-variant font-medium">Rp</span>
+<span class="tabular-nums tracking-tight">1.420.500.000</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="flex items-center text-[#2ECC71] font-data-mono text-data-mono bg-[#2ECC71]/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+                                +118% Return
+                            </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">vs Principal</span>
+</div>
+</div>
+<!-- Chart Area (CSS Mockup of High-Fidelity Chart) -->
+<div class="flex-1 min-h-[300px] relative w-full mt-stack-md flex items-end pb-8">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pt-4 pb-8 z-0">
+<div class="w-full border-t border-surface-variant/40"></div>
+<div class="w-full border-t border-surface-variant/40"></div>
+<div class="w-full border-t border-surface-variant/40"></div>
+<div class="w-full border-t border-surface-variant/40"></div>
+<div class="w-full border-t border-on-surface-variant/20"></div>
+</div>
+<!-- Chart Vector Simulation -->
+<div class="absolute inset-0 z-10 w-full h-full pb-8">
+<!-- Gradient Fill Area -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<defs>
+<lineargradient id="chartGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#2ECC71" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#2ECC71" stop-opacity="0.0"></stop>
+</lineargradient>
+<lineargradient id="lineGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#006d37"></stop>
+<stop offset="100%" stop-color="#2ECC71"></stop>
+</lineargradient>
+</defs>
+<path d="M0,100 Q20,80 40,75 T80,30 T100,10 L100,100 Z" fill="url(#chartGradient)"></path>
+<!-- Main Growth Line -->
+<path class="drop-shadow-md" d="M0,100 Q20,80 40,75 T80,30 T100,10" fill="none" stroke="url(#lineGradient)" stroke-linecap="round" stroke-width="0.8"></path>
+<!-- Principal Line (Linear) -->
+<path d="M0,100 L100,60" fill="none" stroke="#8A9A92" stroke-dasharray="2,2" stroke-width="0.4"></path>
+</svg>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-0 left-0 w-full flex justify-between font-label-caps text-label-caps text-on-surface-variant/70 z-20 px-2">
+<span>Today</span>
+<span>Year 3</span>
+<span>Year 6</span>
+<span>Year 10</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="mt-stack-md pt-stack-md border-t border-surface-variant/50 flex gap-stack-lg z-10">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-[#2ECC71] shadow-[0_0_8px_rgba(46,204,113,0.5)]"></div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Estimated Total Value</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-[#8A9A92] border-t border-dashed border-[#8A9A92]"></div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Principal Invested</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

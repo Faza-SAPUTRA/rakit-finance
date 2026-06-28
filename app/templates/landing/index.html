@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Rakit - All your money. One dashboard.{% endblock %}
+{% block body %}
+<canvas id="particle-bg" class="fixed inset-0 -z-10 opacity-70"></canvas>
+<header class="sticky top-0 z-40 border-b border-line/70 bg-white/80 backdrop-blur-xl">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-3 font-extrabold text-xl">
+      <span class="grid size-9 place-items-center rounded-2xl bg-primary text-white">R</span> Rakit
+    </a>
+    <div class="hidden items-center gap-8 text-sm font-medium text-charcoal md:flex">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#why">Why Rakit</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a class="hidden text-sm font-semibold md:inline" href="{{ url_for('auth.login') }}">Log in</a>
+      <a class="magnetic-btn rounded-full bg-primary px-5 py-3 text-sm font-bold text-white shadow-glow" href="{{ url_for('auth.register') }}">Get Started</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero-surface relative overflow-hidden px-6 pb-20 pt-16 md:pt-24">
+    <div class="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_.9fr]">
+      <div>
+        <p class="reveal mb-5 inline-flex rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-primary shadow-card">Premium personal finance for Indonesia</p>
+        <h1 class="hero-title max-w-4xl text-5xl font-extrabold leading-[1.02] md:text-7xl">All your money. One calm, intelligent dashboard.</h1>
+        <p class="reveal mt-6 max-w-2xl text-lg leading-8 text-charcoal/75">Rakit brings expenses, assets, liabilities, receipts, imports, investments, and market analytics into a single SaaS-grade finance command center.</p>
+        <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row">
+          <a class="gradient-border magnetic-btn rounded-full px-6 py-4 text-center text-sm font-extrabold text-black" href="{{ url_for('auth.register') }}">Create free account</a>
+          <a class="rounded-full border border-line px-6 py-4 text-center text-sm font-bold text-charcoal" href="{{ url_for('auth.login') }}">Open demo</a>
+        </div>
+      </div>
+      <div class="hero-mockup spotlight-card rounded-[28px] border border-line bg-white/80 p-5 shadow-glow backdrop-blur">
+        <div class="rounded-[22px] border border-line bg-offwhite p-5">
+          <div class="mb-5 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase text-muted">Net Worth</p>
+              <p class="mt-2 text-4xl font-extrabold tabular-nums">Rp 1.13B</p>
+            </div>
+            <span class="rounded-full bg-accent/15 px-3 py-1 text-sm font-bold text-primary">+12.4%</span>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-3xl bg-white p-5 shadow-card">
+              <p class="text-sm text-muted">Assets</p>
+              <p class="mt-3 text-2xl font-bold">Rp 1.19B</p>
+            </div>
+            <div class="rounded-3xl bg-black p-5 text-white shadow-card">
+              <p class="text-sm text-white/60">Liabilities</p>
+              <p class="mt-3 text-2xl font-bold">Rp 92.5M</p>
+            </div>
+          </div>
+          <div class="mt-4 rounded-3xl bg-white p-5 shadow-card">
+            <div class="mb-4 flex items-center justify-between">
+              <p class="font-bold">Cashflow Intelligence</p>
+              <span class="material-symbols-outlined text-primary">monitoring</span>
+            </div>
+            <div class="flex h-32 items-end gap-3">
+              {% for h in [42,68,52,78,64,92,84] %}
+              <span class="w-full rounded-t-xl bg-primary/20" style="height: {{ h }}%"></span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="overflow-hidden border-y border-line bg-offwhite py-6">
+    <div class="marquee flex gap-10 whitespace-nowrap text-sm font-bold uppercase text-muted">
+      <span>Works with BCA</span><span>GoPay</span><span>Mandiri</span><span>OVO</span><span>BRI</span><span>ShopeePay</span>
+      <span>Works with BCA</span><span>GoPay</span><span>Mandiri</span><span>OVO</span><span>BRI</span><span>ShopeePay</span>
+    </div>
+  </section>
+
+  <section id="features" class="mx-auto max-w-7xl px-6 py-24">
+    <div class="mb-12 max-w-2xl">
+      <p class="text-sm font-extrabold uppercase text-primary">Feature showcase</p>
+      <h2 class="mt-3 text-4xl font-extrabold">Built like a funded fintech product.</h2>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {% set features = [
+        ("Smart Import", "Drag CSV or Excel files from BCA and GoPay into polymorphic parsers."),
+        ("Receipt Scanner", "OCR extracts merchant, date, and nominal before you confirm."),
+        ("Assets & Liabilities", "Track net worth with account subclasses and signed contributions."),
+        ("Investment Simulator", "Reksa Dana, Gold, and Crypto projections override one method."),
+        ("Market Analytics", "Portfolio donut, risk gauge, and structured news feed."),
+        ("Premium Motion", "GSAP, Anime.js, and React Bits-inspired vanilla effects.")
+      ] %}
+      {% for title, body in features %}
+      <article class="reveal spotlight-card rounded-[24px] border border-line bg-white p-7 shadow-card">
+        <span class="material-symbols-outlined text-primary">auto_graph</span>
+        <h3 class="mt-8 text-xl font-extrabold">{{ title }}</h3>
+        <p class="mt-3 leading-7 text-charcoal/70">{{ body }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="how" class="bg-offwhite px-6 py-24">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="text-center text-4xl font-extrabold">Three steps to financial clarity.</h2>
+      <div class="relative mt-14 grid gap-6 md:grid-cols-3">
+        <svg class="connector absolute left-[16%] top-9 hidden h-16 w-2/3 md:block" viewBox="0 0 600 80" fill="none">
+          <path d="M5 40 C 160 0, 260 80, 595 40" stroke="#0F5C3F" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        {% for title in ["Connect or import", "Scan and confirm", "Simulate and decide"] %}
+        <div class="reveal relative rounded-[24px] border border-line bg-white p-7 text-center shadow-card">
+          <div class="mx-auto grid size-16 place-items-center rounded-full bg-primary text-xl font-black text-white">{{ loop.index }}</div>
+          <h3 class="mt-5 font-extrabold">{{ title }}</h3>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-7xl gap-6 px-6 py-20 md:grid-cols-3">
+    <div class="rounded-[24px] bg-primary p-8 text-white"><p class="counter text-4xl font-extrabold" data-target="2400000000">0</p><p class="mt-2 text-white/70">Rp tracked</p></div>
+    <div class="rounded-[24px] bg-black p-8 text-white"><p class="counter text-4xl font-extrabold" data-target="10000">0</p><p class="mt-2 text-white/70">transactions categorized</p></div>
+    <div class="rounded-[24px] bg-offwhite p-8"><p class="counter text-4xl font-extrabold" data-target="7">0</p><p class="mt-2 text-muted">finance modules</p></div>
+  </section>
+
+  <section id="why" class="mx-auto max-w-7xl px-6 pb-24">
+    <div class="rounded-[32px] border border-line bg-white p-8 shadow-glow md:p-12">
+      <h2 class="text-4xl font-extrabold">Why Rakit beats spreadsheet finance.</h2>
+      <div class="mt-8 overflow-hidden rounded-[24px] border border-line">
+        {% for item in ["Smart import by bank source", "OCR receipt confirmation flow", "Net worth from assets minus liabilities", "Investment projections by instrument subtype"] %}
+        <div class="flex items-center justify-between border-b border-line bg-white px-6 py-5 last:border-b-0 hover:bg-offwhite">
+          <span class="font-semibold">{{ item }}</span><span class="material-symbols-outlined text-primary">check_circle</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-black px-6 py-20 text-white">
+    <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      <h2 class="max-w-2xl text-4xl font-extrabold">Start with a beautiful dashboard, stay for better money decisions.</h2>
+      <a class="magnetic-btn rounded-full bg-accent px-7 py-4 font-extrabold text-black" href="{{ url_for('auth.register') }}">Create free account</a>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-line bg-white px-6 py-10">
+  <div class="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-muted md:flex-row">
+    <p class="font-bold text-black">Rakit</p>
+    <p>Academic OOP fintech project with Flask, SQLAlchemy, GSAP, Anime.js, and vanilla JS.</p>
+  </div>
+</footer>
+{% endblock %}

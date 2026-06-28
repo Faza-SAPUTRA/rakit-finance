@@ -1,0 +1,21 @@
+{% extends "dashboard/base.html" %}
+{% block page_title %}Assets & Liabilities{% endblock %}
+{% block dashboard_content %}
+<section class="grid gap-6 lg:grid-cols-2">
+  {% for kind, title in [('asset','Assets'), ('liability','Liabilities')] %}
+  <div class="rounded-[28px] border border-line bg-white p-8 shadow-card">
+    <div class="flex items-center justify-between"><h2 class="text-xl font-extrabold">{{ title }}</h2><span class="material-symbols-outlined text-primary">{{ 'account_balance_wallet' if kind == 'asset' else 'credit_card' }}</span></div>
+    <div class="mt-6 space-y-4">
+      {% for account in accounts if account.account_type == kind %}
+      <div class="spotlight-card rounded-[24px] border border-line bg-offwhite p-5">
+        <div class="flex items-center justify-between"><p class="font-extrabold">{{ account.name }}</p><span class="text-sm font-bold text-muted">{{ account.institution }}</span></div>
+        <p class="mt-4 text-3xl font-extrabold tabular-nums">{{ account.balance_cents|rupiah }}</p>
+        <p class="mt-2 text-sm text-muted">Net worth contribution: {{ account.net_worth_contribution()|rupiah }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}
+

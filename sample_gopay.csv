@@ -1,0 +1,5 @@
+transaction date,merchant,amount,type
+2026-06-20,Gojek Ride,32000,expense
+2026-06-21,Top Up,250000,income
+2026-06-22,GoFood Lunch,82000,expense
+
