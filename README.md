@@ -2,6 +2,40 @@
 
 Rakit is a premium-feeling personal finance dashboard built as a Flask-rendered PWA. It includes authentication, transactions, Smart Import, OCR receipt scanning, asset/liability tracking, an investment simulator, market analytics, and demo data.
 
+## Screenshots
+
+### Landing Page
+
+![Rakit landing page](UI/rakit_landing_page_hero_section/screen.png)
+
+### Login
+
+![Rakit login screen](UI/rakit_login_screen/screen.png)
+
+### Dashboard Overview
+
+![Rakit dashboard overview](UI/rakit_overview_dashboard/screen.png)
+
+### Smart Import
+
+![Rakit smart import](UI/rakit_smart_import/screen.png)
+
+### Receipt Scanner
+
+![Rakit receipt scanner](UI/rakit_receipt_scanner/screen.png)
+
+### Assets and Liabilities
+
+![Rakit assets and liabilities](UI/rakit_assets_liabilities/screen.png)
+
+### Investment Simulator
+
+![Rakit investment simulator](UI/rakit_investment_simulator/screen.png)
+
+### Market Analytics
+
+![Rakit market analytics](UI/rakit_market_analytics/screen.png)
+
 ## Setup
 
 ```powershell
@@ -49,4 +83,3 @@ app/
 ```
 
 The app includes `manifest.json` and a service worker stub so it can be installed as a basic PWA.
-
