@@ -1,0 +1,78 @@
+{% extends "app/base.html" %}
+{% block title %}Dashboard - Rakit Finance{% endblock %}
+{% block content %}
+{% set page_title = "Hello, " ~ user.name.split()[0] %}
+{% set subtitle = "Welcome back to your dashboard." %}
+{% set add = True %}
+{% include "app/_topbar.html" %}
+
+<section class="stats-grid">
+  {% for stat in stats %}
+  <article class="metric-card">
+    <div class="metric-head"><span class="soft-icon {{ stat.tone }}"><i data-lucide="{{ stat.icon }}"></i></span><span class="trend {{ stat.tone }}">&uarr; {{ stat.trend }}</span></div>
+    <p>{{ stat.label }}</p>
+    <h2>{{ stat.value }}</h2>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="dashboard-grid">
+  <article class="panel chart-panel">
+    <div class="panel-head"><div><h2>Cashflow Trend</h2><p>Income vs Expenses &bull; Last 6 months</p></div><div class="legend"><span class="dot green"></span>Income <span class="dot blue"></span>Expense</div></div>
+    <canvas id="cashflowChart" height="210"></canvas>
+  </article>
+  <aside class="panel forecast-panel">
+    <h2>Smart Forecast</h2>
+    <div class="warning"><i data-lucide="triangle-alert"></i><strong>Budget Warning</strong><span>You're projected to exceed your food budget by $120 next month.</span></div>
+    <div class="progress-row"><span>Projected Spend</span><strong>$3,850.00</strong></div>
+    <div class="progress"><b style="width:86%"></b></div>
+    <div class="mini-grid"><span><small>ESTIMATED SAVINGS</small><strong>$4,350</strong></span><span><small>SAFE TO SPEND</small><strong>$1,120</strong></span></div>
+    <button class="btn btn-outline" data-open-modal="forecast-modal">View Detailed Forecast</button>
+  </aside>
+</section>
+
+<section class="dashboard-grid dashboard-grid--bottom">
+  <article class="panel">
+    <div class="panel-head"><h2>Recent Transactions</h2><a href="{{ url_for('transactions') }}">View All</a></div>
+    <table class="rakit-table">
+      <thead><tr><th>Transaction</th><th>Category</th><th>Date</th><th>Amount</th></tr></thead>
+      <tbody>
+        {% for icon, name, category, tx_date, amount, tone in transactions %}
+        <tr><td><span class="row-icon"><i data-lucide="{{ icon }}"></i></span>{{ name }}</td><td><span class="tag">{{ category }}</span></td><td>{{ tx_date }}</td><td class="amount {{ tone }}">{{ amount }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+  <aside class="side-stack">
+    <div class="goal-card"><h3>Savings Goal</h3><p>New Car Fund</p><strong>$12,000 <span>60%</span></strong><div class="progress light"><b style="width:60%"></b></div><small>On track to reach goal by Jan 2024</small></div>
+    <div class="insight-card"><i data-lucide="lightbulb"></i><h3>Smart Insight</h3><p>You spent 15% less on "Entertainment" this month compared to last. That's $145 more for your savings!</p></div>
+  </aside>
+</section>
+
+<div class="modal-backdrop" id="transaction-modal">
+  <form class="modal-card transaction-modal" method="post" action="{{ url_for('transactions') }}">
+    <button class="modal-close" type="button" data-close-modal><i data-lucide="x"></i></button>
+    <h2>Add New Transaction</h2>
+    <input type="hidden" name="tx_type" value="expense">
+    <div class="segmented"><button class="active" type="button">Expense</button><button type="button">Income</button></div>
+    <label class="amount-entry"><span>$</span><input name="amount" value="0.00" inputmode="decimal"></label>
+    <div class="two-fields"><label>Date<input name="tx_date" type="date" value="2023-10-25"></label><label>Category<select name="category"><option>Shopping</option><option>Food</option><option>Bills</option><option>Transport</option></select></label></div>
+    <label>Account<select name="wallet_id">{% for wallet in wallets %}<option value="{{ wallet.id }}">{{ wallet.name }}</option>{% endfor %}</select></label>
+    <label>Notes (Optional)<textarea name="description" placeholder="What was this for?"></textarea></label>
+    <button class="btn btn-primary"><i data-lucide="check-circle"></i>Save Transaction</button>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="forecast-modal">
+  <div class="modal-card forecast-modal-large">
+    <button class="modal-close" type="button" data-close-modal><i data-lucide="x"></i></button>
+    <h2>Detailed Spending Forecast</h2>
+    <div class="forecast-stats"><span><small>PROJECTED SPEND</small><strong>$3,850.00</strong></span><span><small>SAFE TO SPEND</small><strong>$1,120.00</strong></span><span><small>ESTIMATED SAVINGS</small><strong class="green-text">$4,350.00</strong></span></div>
+    <h3>Category Breakdown</h3>
+    <div class="forecast-line red"><span>Food & Drink</span><b>90% &bull; $1,450.00</b><i></i></div>
+    <div class="forecast-line green"><span>Utilities</span><b>45% &bull; $420.00</b><i></i></div>
+    <div class="forecast-line blue"><span>Transport</span><b>30% &bull; $280.00</b><i></i></div>
+    <div class="ai-callout"><i data-lucide="sparkles"></i><span><strong>AI Recommendation</strong>Reduce dining out by $120 to hit your monthly savings goal</span><button class="btn btn-primary btn-small">Adjust Budgets</button></div>
+  </div>
+</div>
+{% endblock %}

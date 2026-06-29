@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Rakit Finance{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  </head>
+  <body class="app-body">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark"><i data-lucide="wallet-cards"></i></span><span>Rakit</span></a>
+      <nav class="nav-menu">
+        <a class="{{ 'active' if active_page == 'dashboard' }}" href="{{ url_for('dashboard') }}"><i data-lucide="layout-grid"></i>Home</a>
+        <a class="{{ 'active' if active_page == 'transactions' }}" href="{{ url_for('transactions') }}"><i data-lucide="receipt-text"></i>Transactions</a>
+        <a class="{{ 'active' if active_page == 'analytics' }}" href="{{ url_for('analytics') }}"><i data-lucide="chart-no-axes-combined"></i>Analytics</a>
+        <a class="{{ 'active' if active_page == 'accounts' }}" href="{{ url_for('accounts') }}"><i data-lucide="wallet"></i>Accounts & Import</a>
+        <a class="{{ 'active' if active_page == 'investment' }}" href="{{ url_for('investment_sim') }}"><i data-lucide="chart-line"></i>Investment Sim</a>
+      </nav>
+      <div class="profile-mini"><span>{{ (user.name[:1] if user else "A") }}</span><div><strong>{{ user.name if user else "Alex Morgan" }}</strong><small>Premium Plan</small></div><a href="{{ url_for('logout') }}" aria-label="Logout"><i data-lucide="log-out"></i></a></div>
+      <div class="sidebar-card">
+        <strong>UPGRADE TO PRO</strong>
+        <p>Get advanced analytics and insights.</p>
+        <button class="btn btn-dark">Go Premium</button>
+      </div>
+    </aside>
+    <main class="main-frame">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash-stack flash-stack--app">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "auth/base.html" %}
+{% block title %}Create Account - Rakit Finance{% endblock %}
+
+{% block brand_copy %}
+<h1>Master your money,<br>secure your future.</h1>
+<p>Join over 50,000 users who are building wealth through smart tracking and automated insights.</p>
+<div class="feature-pills"><span><i data-lucide="shield-check"></i>Bank-grade Security</span><span><i data-lucide="sparkles"></i>Smart Insights</span></div>
+{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <header>
+    <h2>Create your account</h2>
+    <p>Start your journey to financial freedom today.</p>
+  </header>
+  <form method="post" class="form-stack">
+    <label>Full Name<input name="name" placeholder="John Doe"></label>
+    <label>Email address<input name="email" type="email" placeholder="name@example.com"></label>
+    <label>Password<input name="password" type="password" value="password"><small>Must be at least 8 characters long.</small></label>
+    <label class="check-line"><input type="checkbox"> <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span></label>
+    <button class="btn btn-primary" type="submit">Create Account</button>
+  </form>
+  <div class="divider"><span>Or continue with</span></div>
+  <button class="btn btn-outline google-btn" type="button"><span class="google-g">G</span> Sign in with Google</button>
+  <p class="switch-auth">Already have an account? <a href="{{ url_for('login') }}">Sign In</a></p>
+</div>
+{% endblock %}

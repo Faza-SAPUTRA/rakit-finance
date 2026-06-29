@@ -1,0 +1,33 @@
+{% extends "app/base.html" %}
+{% block title %}Wallet & Integrations - Rakit Finance{% endblock %}
+{% block content %}
+{% set page_title = "Wallet & Integrations" %}
+{% set subtitle = "Upload statements to sync balances and manage your connected accounts." %}
+{% include "app/_topbar.html" %}
+
+<section class="accounts-grid">
+  <div>
+    <div class="upload-box"><span><i data-lucide="file-up"></i></span><h2>Upload Bank or E-Wallet Statement</h2><p>Drag and drop your .csv or .xlsx files here to sync your balances</p><button class="btn btn-primary">Browse Files</button></div>
+    <div class="wallet-head"><h2>Connected Wallets</h2><a href="#">+ Add New</a></div>
+    <div class="wallet-list">
+      {% for icon, name, balance, tone, wallet_id in wallets %}
+      <article><span class="wallet-icon {{ tone }}"><i data-lucide="{{ icon }}"></i></span><div><h3>{{ name }}</h3><p>{{ balance|idr }}</p></div><b>&bull; ACTIVE</b></article>
+      {% endfor %}
+    </div>
+  </div>
+  <aside class="side-stack">
+    <form class="panel record-card" method="post">
+      <h2><i data-lucide="circle-plus"></i>Record Transaction</h2>
+      <input type="hidden" name="tx_type" value="expense">
+      <label>Select Wallet/Source<select name="wallet_id">{% for icon, name, balance, tone, wallet_id in wallets %}<option value="{{ wallet_id }}">{{ name }}</option>{% endfor %}</select></label>
+      <label>Amount<div class="currency-input"><span>USD</span><input name="amount" placeholder="0" inputmode="decimal"></div></label>
+      <label>Category<select name="category"><option>Food</option><option>Transport</option><option>Shopping</option><option>Bills</option></select></label>
+      <input type="hidden" name="tx_date" value="2023-10-25">
+      <input type="hidden" name="description" value="Manual transaction">
+      <button class="btn btn-dark" type="button"><i data-lucide="receipt-text"></i>Upload Receipt (OCR)</button>
+      <button class="btn btn-primary" type="submit">Save Transaction</button>
+    </form>
+    <div class="limit-card"><div><strong>Daily Limit</strong><span>65% used</span></div><div class="progress light"><b style="width:65%"></b></div><h2>IDR 350,000 left</h2><p>Based on your monthly budget plan</p></div>
+  </aside>
+</section>
+{% endblock %}

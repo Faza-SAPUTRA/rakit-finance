@@ -1,0 +1,29 @@
+{% extends "app/base.html" %}
+{% block title %}Analytics - Rakit Finance{% endblock %}
+{% block content %}
+{% set page_title = "Analytics Dashboard" %}
+{% set search = "Search markets..." %}
+{% include "app/_topbar.html" %}
+
+<section class="market-grid">
+  {% for label, value, change, direction in market_cards %}
+  <article class="market-card">
+    <div><h2>{{ label }}</h2><span class="{{ direction }}">{{ change }}</span></div>
+    <strong>{{ value }}</strong>
+    <canvas class="sparkline" data-direction="{{ direction }}" height="54"></canvas>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="panel news-panel">
+  <div class="panel-head"><h2>Live Geopolitical News</h2><a href="#">View All</a></div>
+  {% for source, time, title, text in news %}
+  <article class="news-item"><p><span>{{ source }}</span><i data-lucide="clock"></i>{{ time }}</p><h3>{{ title }}</h3><p>{{ text }}</p></article>
+  {% endfor %}
+</section>
+
+<section class="analytics-bottom">
+  <article class="panel"><h2>Portfolio Distribution</h2><div class="portfolio-box"><div class="donut-label">Total<br><strong>$124k</strong></div><canvas id="portfolioChart"></canvas><ul><li><b class="dot green"></b>Crypto (45%)</li><li><b class="dot navy"></b>Bonds (30%)</li><li><b class="dot teal"></b>Stocks (15%)</li><li><b class="dot pale"></b>Cash (10%)</li></ul></div></article>
+  <article class="panel"><h2>Risk Exposure Index</h2><div class="risk-gauge"><div class="gauge-arc"></div><strong>68</strong><span>MODERATE-HIGH</span></div><div class="blue-callout"><strong>Insight:</strong> High exposure to crypto volatility. Consider balancing with more IndoGB bonds.<br><a href="#">ADJUST ALLOCATION →</a></div></article>
+</section>
+{% endblock %}

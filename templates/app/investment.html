@@ -1,0 +1,43 @@
+{% extends "app/base.html" %}
+{% block title %}Investment Simulator - Rakit Finance{% endblock %}
+{% block content %}
+{% set page_title = "Investment Simulator" %}
+{% set subtitle = "Project your future wealth based on market trends" %}
+{% set search = "Search markets..." %}
+{% include "app/_topbar.html" %}
+
+<section class="investment-types">
+  <article class="active"><span class="soft-icon green"><i data-lucide="landmark"></i></span><h2>Mutual Fund</h2><p>Diversified portfolio managed by experts</p></article>
+  <article><span class="soft-icon"><i data-lucide="banknote"></i></span><h2>Gold</h2><p>Safe-haven commodity for stability</p></article>
+  <article><span class="soft-icon"><i data-lucide="bitcoin"></i></span><h2>Crypto</h2><p>High-growth digital asset volatility</p></article>
+</section>
+
+<section class="investment-grid">
+  <aside class="side-stack">
+    <form class="panel parameters" method="post">
+      <h2><i data-lucide="sliders-horizontal"></i>Parameters</h2>
+      <label>Initial Investment Amount<input name="initial" value="{{ initial }}"></label>
+      <label>Monthly Contribution <span>${{ monthly }}</span><input name="monthly" type="range" min="0" max="5000" value="{{ monthly }}"></label>
+      <label>Time Horizon (Years)<select name="years"><option selected>{{ years }} Years</option><option value="5">5 Years</option><option value="15">15 Years</option></select></label>
+      <button class="btn btn-primary">Recalculate Projection</button>
+    </form>
+    <div class="market-outlook"><strong>MARKET OUTLOOK</strong><p>Based on current trends, Mutual Funds are expected to yield 8-12% APR over the next decade.</p></div>
+  </aside>
+  <div>
+    <article class="panel projection-panel">
+      <div class="panel-head"><div><h2>Wealth Growth Projection</h2><p>Projected balance over {{ years }} years</p></div><div class="legend"><span class="dot green"></span>Contributions <span class="dot blue"></span>Returns</div></div>
+      <canvas id="investmentChart" data-labels='{{ projection.labels|tojson }}' data-values='{{ projection.balances|tojson }}'></canvas>
+    </article>
+    <article class="investment-summary"><span><small>TOTAL CONTRIBUTION</small><strong>{{ projection.total_contribution|money }}</strong></span><span><small>INTEREST EARNED</small><strong>{{ projection.interest_earned|money }}</strong></span><span><small>ESTIMATED TOTAL RETURN</small><strong>{{ projection.estimated_total|money }}</strong></span></article>
+  </div>
+</section>
+
+<section class="panel table-panel growth-table">
+  <h2>Growth Breakdown</h2>
+  <table class="rakit-table rakit-table--large">
+    <thead><tr><th>Year</th><th>Annual Contribution</th><th>Year-End Interest</th><th>Total Balance</th></tr></thead>
+    <tbody>{% for row in projection.rows %}<tr><td><strong>{{ row.year }}</strong></td><td>{{ row.contribution|money }}</td><td class="amount in">+{{ row.interest|money }}</td><td><strong>{{ row.balance|money }}</strong></td></tr>{% endfor %}</tbody>
+  </table>
+  <a class="view-schedule" href="#">VIEW FULL SCHEDULE</a>
+</section>
+{% endblock %}

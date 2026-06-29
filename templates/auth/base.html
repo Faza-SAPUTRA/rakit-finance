@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Rakit Finance{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-brand">
+        <div class="auth-brand__content">
+          <a class="brand brand--large" href="{{ url_for('login') }}">
+            <span class="brand-mark"><i data-lucide="wallet-cards"></i></span>
+            <span>Rakit</span>
+          </a>
+          {% block brand_copy %}
+          <h1>Master your money,<br>secure your future.</h1>
+          <p>Join over 50,000 users who are building wealth and achieving financial independence with our modern portfolio tracking and budgeting tools.</p>
+          {% endblock %}
+        </div>
+        <div class="auth-brand__bottom">
+          <span>&copy; 2026 Rakit Finance Inc.</span>
+          <span><a href="#">Privacy</a><a href="#">Terms</a></span>
+        </div>
+      </section>
+      <section class="auth-panel">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-stack">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

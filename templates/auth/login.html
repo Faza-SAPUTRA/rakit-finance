@@ -1,0 +1,32 @@
+{% extends "auth/base.html" %}
+{% block title %}Sign In - Rakit Finance{% endblock %}
+
+{% block brand_copy %}
+<h1>Master your<br>money,<br>secure your<br>future.</h1>
+<p>Join over 50,000 users who are building wealth and achieving financial independence with our modern portfolio tracking and budgeting tools.</p>
+<div class="trust-row">
+  <span class="avatar-stack"><b></b><b></b><b></b></span>
+  <span><strong>Trust by experts</strong><small>★★★★★</small></span>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="auth-card auth-card--login">
+  <header>
+    <h2>Welcome back</h2>
+    <p>Please enter your details to sign in</p>
+  </header>
+  <form method="post" class="form-stack">
+    <label>Email address<input name="email" type="email" placeholder="name@company.com"></label>
+    <label>Password <a class="label-link" href="{{ url_for('forgot_password') }}">Forgot password?</a>
+      <span class="password-field"><input name="password" type="password" value="password"><i data-lucide="eye"></i></span>
+    </label>
+    <label class="check-line"><input type="checkbox"> <span>Keep me logged in</span></label>
+    <button class="btn btn-primary" type="submit">SIGN IN</button>
+  </form>
+  <div class="divider"><span>OR CONTINUE WITH</span></div>
+  <button class="btn btn-outline google-btn" type="button"><span class="google-g">G</span> Sign in with Google</button>
+  <p class="switch-auth">Don't have an account? <a href="{{ url_for('register') }}">Create Account</a></p>
+  <footer class="auth-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Contact Support</a></footer>
+</div>
+{% endblock %}

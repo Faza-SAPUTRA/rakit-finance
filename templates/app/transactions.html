@@ -1,0 +1,38 @@
+{% extends "app/base.html" %}
+{% block title %}Transactions - Rakit Finance{% endblock %}
+{% block content %}
+{% set page_title = "Transactions" %}
+{% set search = "Search transactions..." %}
+{% set export = True %}
+{% include "app/_topbar.html" %}
+
+<section class="content-two-col">
+  <article class="panel table-panel">
+    <table class="rakit-table rakit-table--large">
+      <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Account</th><th>Amount</th></tr></thead>
+      <tbody>
+        {% for tx_date, category, description, account, amount, tone in transactions %}
+        <tr>
+          <td>{{ tx_date }}</td>
+          <td><span class="tag tag-{{ category|lower }}">{{ category }}</span></td>
+          <td><strong>{{ description }}</strong></td>
+          <td><i data-lucide="{{ 'landmark' if account == 'Bank' else 'wallet-cards' }}"></i>{{ account }}</td>
+          <td class="amount {{ tone }}">{{ amount }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="table-foot"><span>Showing {{ transactions|length }} transactions</span><div class="pager"><i data-lucide="chevron-left"></i><b>1</b><span>2</span><span>3</span><i data-lucide="chevron-right"></i></div></div>
+  </article>
+  <aside class="side-stack">
+    <div class="panel scanner-card">
+      <h2>Smart Receipt Scanner <i data-lucide="wand-sparkles"></i></h2>
+      <div class="dropzone"><i data-lucide="file-up"></i><strong>Drag & Drop Receipt</strong><span>or Click to Upload</span></div>
+      <div class="scan-result"><strong>SCANNING RESULT</strong><p><span>Total Amount</span><b>$45.00</b></p><p><span>Date</span><b>Oct 12, 2023</b></p><p><span>Merchant</span><b>Whole Foods</b></p></div>
+      <button class="btn btn-primary"><i data-lucide="save"></i>Confirm Transaction</button>
+    </div>
+    <div class="goal-card"><h3>Spending Insight</h3><p>You've spent 12% more on <b>Food</b> this week compared to last week. Try to use our meal planner to save more.</p></div>
+    <div class="spending-card"><p>Monthly Spending</p><strong>$1,240.50</strong><small>Down 12% vs last month</small></div>
+  </aside>
+</section>
+{% endblock %}
