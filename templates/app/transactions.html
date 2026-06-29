@@ -4,6 +4,7 @@
 {% set page_title = "Transactions" %}
 {% set search = "Search transactions..." %}
 {% set export = True %}
+{% set export_url = url_for('export_transactions', q=query) %}
 {% include "app/_topbar.html" %}
 
 <section class="content-two-col">
@@ -14,7 +15,7 @@
         {% for tx_date, category, description, account, amount, tone in transactions %}
         <tr>
           <td>{{ tx_date }}</td>
-          <td><span class="tag tag-{{ category|lower }}">{{ category }}</span></td>
+          <td><span class="tag tag-{{ category|lower|replace(' ', '-')|replace('&', 'and') }}">{{ category }}</span></td>
           <td><strong>{{ description }}</strong></td>
           <td><i data-lucide="{{ 'landmark' if account == 'Bank' else 'wallet-cards' }}"></i>{{ account }}</td>
           <td class="amount {{ tone }}">{{ amount }}</td>
@@ -22,15 +23,26 @@
         {% endfor %}
       </tbody>
     </table>
-    <div class="table-foot"><span>Showing {{ transactions|length }} transactions</span><div class="pager"><i data-lucide="chevron-left"></i><b>1</b><span>2</span><span>3</span><i data-lucide="chevron-right"></i></div></div>
+    <div class="table-foot"><span>Showing {{ showing_start }}-{{ showing_end }} of {{ total }} transactions{% if query %} for "{{ query }}"{% endif %}</span><div class="pager">
+      {% if page > 1 %}<a href="{{ url_for('transactions', q=query, page=page-1) }}"><i data-lucide="chevron-left"></i></a>{% else %}<i data-lucide="chevron-left"></i>{% endif %}
+      {% for number in range(1, total_pages + 1) %}
+        {% if number == page %}<b>{{ number }}</b>{% else %}<a href="{{ url_for('transactions', q=query, page=number) }}">{{ number }}</a>{% endif %}
+      {% endfor %}
+      {% if page < total_pages %}<a href="{{ url_for('transactions', q=query, page=page+1) }}"><i data-lucide="chevron-right"></i></a>{% else %}<i data-lucide="chevron-right"></i>{% endif %}
+    </div></div>
   </article>
   <aside class="side-stack">
-    <div class="panel scanner-card">
+    <form class="panel scanner-card" method="post">
       <h2>Smart Receipt Scanner <i data-lucide="wand-sparkles"></i></h2>
-      <div class="dropzone"><i data-lucide="file-up"></i><strong>Drag & Drop Receipt</strong><span>or Click to Upload</span></div>
-      <div class="scan-result"><strong>SCANNING RESULT</strong><p><span>Total Amount</span><b>$45.00</b></p><p><span>Date</span><b>Oct 12, 2023</b></p><p><span>Merchant</span><b>Whole Foods</b></p></div>
-      <button class="btn btn-primary"><i data-lucide="save"></i>Confirm Transaction</button>
-    </div>
+      <input type="hidden" name="tx_type" value="expense">
+      <input type="hidden" name="amount" value="45.00">
+      <input type="hidden" name="category" value="Groceries">
+      <input type="hidden" name="description" value="Whole Foods receipt">
+      <input type="hidden" name="tx_date" value="{{ today }}">
+      <label class="dropzone"><input class="file-input" type="file" accept="image/*,.pdf"><i data-lucide="file-up"></i><strong>Drag & Drop Receipt</strong><span>or Click to Upload</span></label>
+      <div class="scan-result scan-result--empty" data-empty="true"><strong>SCANNING RESULT</strong><p><span>No receipt scanned yet</span><b>Awaiting upload</b></p><small>Upload a receipt to preview merchant, date, and amount before confirming.</small></div>
+      <button class="btn btn-primary" type="submit" disabled><i data-lucide="save"></i>Confirm Transaction</button>
+    </form>
     <div class="goal-card"><h3>Spending Insight</h3><p>You've spent 12% more on <b>Food</b> this week compared to last week. Try to use our meal planner to save more.</p></div>
     <div class="spending-card"><p>Monthly Spending</p><strong>$1,240.50</strong><small>Down 12% vs last month</small></div>
   </aside>

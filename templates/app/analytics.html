@@ -16,7 +16,7 @@
 </section>
 
 <section class="panel news-panel">
-  <div class="panel-head"><h2>Live Geopolitical News</h2><a href="#">View All</a></div>
+  <div class="panel-head"><h2>Live Geopolitical News</h2><a href="{{ url_for('analytics') }}">View All</a></div>
   {% for source, time, title, text in news %}
   <article class="news-item"><p><span>{{ source }}</span><i data-lucide="clock"></i>{{ time }}</p><h3>{{ title }}</h3><p>{{ text }}</p></article>
   {% endfor %}
@@ -24,6 +24,21 @@
 
 <section class="analytics-bottom">
   <article class="panel"><h2>Portfolio Distribution</h2><div class="portfolio-box"><div class="donut-label">Total<br><strong>$124k</strong></div><canvas id="portfolioChart"></canvas><ul><li><b class="dot green"></b>Crypto (45%)</li><li><b class="dot navy"></b>Bonds (30%)</li><li><b class="dot teal"></b>Stocks (15%)</li><li><b class="dot pale"></b>Cash (10%)</li></ul></div></article>
-  <article class="panel"><h2>Risk Exposure Index</h2><div class="risk-gauge"><div class="gauge-arc"></div><strong>68</strong><span>MODERATE-HIGH</span></div><div class="blue-callout"><strong>Insight:</strong> High exposure to crypto volatility. Consider balancing with more IndoGB bonds.<br><a href="#">ADJUST ALLOCATION →</a></div></article>
+  <article class="panel"><h2>Risk Exposure Index</h2><div class="risk-gauge">
+    <svg class="risk-gauge-svg" viewBox="0 0 240 150" role="img" aria-label="Risk score gauge: 68 moderate-high">
+      <defs>
+        <linearGradient id="riskGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#07b86f"/>
+          <stop offset="42%" stop-color="#facc15"/>
+          <stop offset="68%" stop-color="#ff8a2a"/>
+          <stop offset="100%" stop-color="#ef4444"/>
+        </linearGradient>
+      </defs>
+      <path class="risk-gauge-track" d="M25 120 A95 95 0 0 1 215 120"/>
+      <path class="risk-gauge-arc" d="M25 120 A95 95 0 0 1 215 120"/>
+      <line class="risk-gauge-needle" x1="120" y1="120" x2="167" y2="49"/>
+      <circle class="risk-gauge-pin" cx="120" cy="120" r="8"/>
+    </svg>
+    <strong>68</strong><span>MODERATE-HIGH</span></div><div class="blue-callout"><strong>Insight:</strong> High exposure to crypto volatility. Consider balancing with more IndoGB bonds.<br><a href="{{ url_for('investment_sim', asset='gold') }}">ADJUST ALLOCATION &rarr;</a></div></article>
 </section>
 {% endblock %}

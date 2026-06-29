@@ -1,10 +1,13 @@
 import os
-from datetime import date, datetime
+import csv
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
+from io import StringIO
 
 from dotenv import load_dotenv
 from flask import (
     Flask,
+    Response,
     flash,
     jsonify,
     redirect,
@@ -13,7 +16,8 @@ from flask import (
     session,
     url_for,
 )
-from sqlalchemy import func
+from sqlalchemy import func, or_
+from sqlalchemy.orm import joinedload
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import Budget, Transaction, User, Wallet, db
@@ -25,6 +29,7 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-rakit-secret")
+    app.permanent_session_lifetime = timedelta(days=30)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
         "DATABASE_URL", "sqlite:///rakit_finance.db"
     )
@@ -35,11 +40,13 @@ def create_app():
         with app.app_context():
             db.create_all()
             seed_demo_data()
+            refresh_demo_dates()
 
     @app.cli.command("init-db")
     def init_db_command():
         db.create_all()
         seed_demo_data()
+        refresh_demo_dates()
         print("Database tables and demo data are ready.")
 
     @app.route("/")
@@ -56,9 +63,28 @@ def create_app():
             user = User.query.filter_by(email=email).first()
             if user and check_password_hash(user.password_hash, password):
                 session["user_id"] = user.id
+                session.permanent = request.form.get("remember") == "on"
                 return redirect(url_for("dashboard"))
             flash("Email atau password salah.")
         return render_template("auth/login.html")
+
+    @app.route("/auth/google-demo")
+    def google_demo():
+        user = User.query.filter_by(email="google.demo@rakit.local").first()
+        if not user:
+            user = User(
+                name="Google Demo",
+                email="google.demo@rakit.local",
+                password_hash=generate_password_hash(os.urandom(12).hex()),
+            )
+            db.session.add(user)
+            db.session.flush()
+            create_default_wallets(user)
+            db.session.commit()
+        session["user_id"] = user.id
+        session.permanent = True
+        flash("Signed in with demo Google account.")
+        return redirect(url_for("dashboard"))
 
     @app.route("/register", methods=["GET", "POST"])
     def register():
@@ -66,8 +92,12 @@ def create_app():
             name = request.form.get("name", "").strip()
             email = request.form.get("email", "").strip().lower()
             password = request.form.get("password", "")
+            agreed = request.form.get("terms") == "on"
             if not name or not email or len(password) < 8:
                 flash("Lengkapi nama, email, dan password minimal 8 karakter.")
+                return render_template("auth/register.html")
+            if not agreed:
+                flash("Kamu harus menyetujui Terms of Service dan Privacy Policy.")
                 return render_template("auth/register.html")
             if User.query.filter_by(email=email).first():
                 flash("Email sudah terdaftar. Silakan sign in.")
@@ -92,7 +122,14 @@ def create_app():
 
     @app.route("/forgot-password", methods=["GET", "POST"])
     def forgot_password():
-        sent = request.method == "POST"
+        sent = False
+        if request.method == "POST":
+            email = request.form.get("email", "").strip().lower()
+            sent = bool(email)
+            if User.query.filter_by(email=email).first():
+                flash("Reset link siap dikirim. Untuk demo lokal, lanjut login dengan password yang kamu buat.")
+            else:
+                flash("Kalau email itu terdaftar, reset link akan dikirim.")
         return render_template("auth/forgot_password.html", sent=sent)
 
     @app.route("/dashboard")
@@ -106,6 +143,7 @@ def create_app():
             wallets=wallet_options(user),
             transactions=recent_transactions(user),
             stats=dashboard_stats(user),
+            today=date.today().isoformat(),
         )
 
     @app.route("/transactions", methods=["GET", "POST"])
@@ -115,39 +153,85 @@ def create_app():
         if request.method == "POST":
             create_transaction_from_form(user, request.form)
             return redirect(url_for("transactions"))
+        query = request.args.get("q", "").strip()
+        page = max(safe_int(request.args.get("page"), 1), 1)
+        per_page = 5
+        total = transaction_count(user, query=query)
+        total_pages = max(1, ((total - 1) // per_page) + 1) if total else 1
+        page = min(page, total_pages)
+        start = ((page - 1) * per_page) + 1 if total else 0
+        end = min(page * per_page, total)
         return render_template(
             "app/transactions.html",
             active_page="transactions",
             user=user,
-            transactions=transaction_history(user),
+            transactions=transaction_history(user, query=query, page=page, per_page=per_page),
+            query=query,
+            page=page,
+            total=total,
+            total_pages=total_pages,
+            showing_start=start,
+            showing_end=end,
+            today=date.today().isoformat(),
+        )
+
+    @app.route("/transactions/export")
+    @login_required
+    def export_transactions():
+        user = current_user()
+        query = request.args.get("q", "").strip()
+        rows = transaction_rows(user, query=query, limit=None).all()
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["date", "type", "category", "description", "wallet", "amount"])
+        for tx in rows:
+            writer.writerow(
+                [
+                    tx.tx_date.isoformat(),
+                    tx.tx_type,
+                    tx.category,
+                    tx.description,
+                    tx.wallet.name if tx.wallet else "",
+                    str(tx.amount),
+                ]
+            )
+        return Response(
+            output.getvalue(),
+            mimetype="text/csv",
+            headers={"Content-Disposition": "attachment; filename=rakit-transactions.csv"},
         )
 
     @app.route("/analytics")
     @login_required
     def analytics():
+        query = request.args.get("q", "").strip()
         return render_template(
             "app/analytics.html",
             active_page="analytics",
             user=current_user(),
-            market_cards=market_cards(),
-            news=market_news(),
+            market_cards=filter_market_cards(query),
+            news=filter_market_news(query),
+            query=query,
         )
 
     @app.route("/investment-sim", methods=["GET", "POST"])
     @login_required
     def investment_sim():
-        initial = int(request.form.get("initial", 10000))
-        monthly = int(request.form.get("monthly", 500))
-        years = int(request.form.get("years", 10))
-        projection = calculate_investment_projection(initial, monthly, years)
+        asset = request.form.get("asset", request.args.get("asset", "mutual_fund"))
+        initial = safe_int(request.form.get("initial"), 10000)
+        monthly = safe_int(request.form.get("monthly"), 500)
+        years = safe_int(request.form.get("years"), 10)
+        projection = calculate_investment_projection(initial, monthly, years, asset=asset)
         return render_template(
             "app/investment.html",
             active_page="investment",
             user=current_user(),
+            asset=asset,
             initial=initial,
             monthly=monthly,
             years=years,
             projection=projection,
+            investment_assets=investment_assets(),
         )
 
     @app.route("/accounts", methods=["GET", "POST"])
@@ -162,15 +246,92 @@ def create_app():
             active_page="accounts",
             user=user,
             wallets=wallets(user),
+            today=date.today().isoformat(),
         )
+
+    @app.post("/accounts/wallets")
+    @login_required
+    def add_wallet():
+        user = current_user()
+        name = request.form.get("name", "").strip()
+        wallet_type = request.form.get("wallet_type", "bank")
+        try:
+            balance = Decimal(str(request.form.get("balance", "0")).replace(",", ""))
+        except InvalidOperation:
+            balance = Decimal("0")
+        if not name:
+            flash("Nama wallet wajib diisi.")
+            return redirect(url_for("accounts"))
+        db.session.add(
+            Wallet(
+                user_id=user.id,
+                name=name,
+                wallet_type=wallet_type,
+                balance=balance,
+                currency="USD",
+            )
+        )
+        db.session.commit()
+        flash("Wallet berhasil ditambahkan.")
+        return redirect(url_for("accounts"))
+
+    @app.post("/accounts/import")
+    @login_required
+    def import_statement():
+        user = current_user()
+        upload = request.files.get("statement")
+        if not upload or not upload.filename:
+            flash("Pilih file CSV statement terlebih dahulu.")
+            return redirect(url_for("accounts"))
+        if not upload.filename.lower().endswith(".csv"):
+            flash("Import demo saat ini mendukung CSV. File .xlsx bisa ditambahkan nanti.")
+            return redirect(url_for("accounts"))
+
+        default_wallet = Wallet.query.filter_by(user_id=user.id).order_by(Wallet.id).first()
+        text = upload.stream.read().decode("utf-8-sig")
+        reader = csv.DictReader(StringIO(text))
+        imported = 0
+        for row in reader:
+            amount_raw = row.get("amount") or row.get("Amount") or "0"
+            try:
+                amount = Decimal(str(amount_raw).replace(",", ""))
+            except InvalidOperation:
+                continue
+            tx_type = (row.get("type") or row.get("Type") or "").lower()
+            if tx_type not in {"income", "expense"}:
+                tx_type = "income" if amount >= 0 else "expense"
+            amount = abs(amount)
+            tx_date = parse_date(row.get("date") or row.get("Date")) or date.today()
+            wallet = default_wallet
+            wallet_name = row.get("wallet") or row.get("Wallet")
+            if wallet_name:
+                wallet = Wallet.query.filter_by(user_id=user.id, name=wallet_name).first() or default_wallet
+            if not wallet:
+                continue
+            transaction = Transaction(
+                user_id=user.id,
+                wallet_id=wallet.id,
+                tx_type=tx_type,
+                category=row.get("category") or row.get("Category") or "Imported",
+                description=row.get("description") or row.get("Description") or "Imported transaction",
+                amount=amount,
+                tx_date=tx_date,
+            )
+            wallet.balance += amount if tx_type == "income" else -amount
+            db.session.add(transaction)
+            imported += 1
+        db.session.commit()
+        flash(f"{imported} transaksi berhasil diimport.")
+        return redirect(url_for("accounts"))
 
     @app.post("/api/investment")
     def investment_api():
         payload = request.get_json(force=True)
         projection = calculate_investment_projection(
-            int(payload.get("initial", 10000)),
-            int(payload.get("monthly", 500)),
-            int(payload.get("years", 10)),
+            safe_int(payload.get("initial"), 10000),
+            safe_int(payload.get("monthly"), 500),
+            safe_int(payload.get("years"), 10),
+            asset=payload.get("asset", "mutual_fund"),
         )
         return jsonify(projection)
 
@@ -215,12 +376,13 @@ def seed_demo_data():
     create_default_wallets(user)
     db.session.flush()
     wallets_by_name = {wallet.name: wallet for wallet in user.wallets}
+    today = date.today()
     transactions = [
-        ("income", "Income", "Monthly Salary", "Bank Transfer", Decimal("5000.00"), date(2023, 10, 14), "BCA Account"),
-        ("expense", "Food", "Starbucks Coffee", "E-Wallet", Decimal("15.50"), date(2023, 10, 13), "GoPay Wallet"),
-        ("expense", "Shopping", "Amazon Purchase", "Bank Card", Decimal("89.99"), date(2023, 10, 12), "BCA Account"),
-        ("expense", "Bills", "Electric Utility", "Bank Transfer", Decimal("120.00"), date(2023, 10, 12), "BCA Account"),
-        ("expense", "Transport", "Uber Ride", "E-Wallet", Decimal("22.40"), date(2023, 10, 11), "GoPay Wallet"),
+        ("income", "Income", "Monthly Salary", "Bank Transfer", Decimal("5000.00"), today, "BCA Account"),
+        ("expense", "Food", "Starbucks Coffee", "E-Wallet", Decimal("15.50"), today - timedelta(days=1), "GoPay Wallet"),
+        ("expense", "Shopping", "Amazon Purchase", "Bank Card", Decimal("89.99"), today - timedelta(days=2), "BCA Account"),
+        ("expense", "Bills", "Electric Utility", "Bank Transfer", Decimal("120.00"), today - timedelta(days=3), "BCA Account"),
+        ("expense", "Transport", "Uber Ride", "E-Wallet", Decimal("22.40"), today - timedelta(days=4), "GoPay Wallet"),
     ]
     for tx_type, category, description, account, amount, tx_date, wallet_name in transactions:
         db.session.add(
@@ -238,6 +400,25 @@ def seed_demo_data():
     db.session.commit()
 
 
+def refresh_demo_dates():
+    demo_offsets = {
+        "Monthly Salary": 0,
+        "Starbucks Coffee": 1,
+        "Amazon Purchase": 2,
+        "Electric Utility": 3,
+        "Uber Ride": 4,
+    }
+    today = date.today()
+    changed = False
+    for description, offset in demo_offsets.items():
+        tx = Transaction.query.filter_by(description=description).first()
+        if tx and tx.tx_date.year < today.year:
+            tx.tx_date = today - timedelta(days=offset)
+            changed = True
+    if changed:
+        db.session.commit()
+
+
 def create_default_wallets(user):
     db.session.add_all(
         [
@@ -249,7 +430,8 @@ def create_default_wallets(user):
 
 
 def create_transaction_from_form(user, form):
-    wallet_id = int(form.get("wallet_id") or user.wallets[0].id)
+    default_wallet = Wallet.query.filter_by(user_id=user.id).order_by(Wallet.id).first()
+    wallet_id = int(form.get("wallet_id") or default_wallet.id)
     wallet = Wallet.query.filter_by(id=wallet_id, user_id=user.id).first_or_404()
     tx_type = form.get("tx_type", "expense")
     try:
@@ -262,8 +444,7 @@ def create_transaction_from_form(user, form):
     if amount == 0:
         flash("Amount harus lebih dari 0.")
         return
-    tx_date_raw = form.get("tx_date") or date.today().isoformat()
-    tx_date = datetime.strptime(tx_date_raw, "%Y-%m-%d").date()
+    tx_date = parse_date(form.get("tx_date")) or date.today()
     transaction = Transaction(
         user_id=user.id,
         wallet_id=wallet.id,
@@ -339,13 +520,54 @@ def recent_transactions(user):
     ]
 
 
-def transaction_history(user):
+def transaction_rows(user, query="", limit=10, offset=0):
     rows = (
-        Transaction.query.filter_by(user_id=user.id)
-        .order_by(Transaction.tx_date.desc(), Transaction.id.desc())
-        .limit(10)
-        .all()
+        Transaction.query.options(joinedload(Transaction.wallet))
+        .filter_by(user_id=user.id)
     )
+    if query:
+        like = f"%{query}%"
+        rows = rows.outerjoin(Wallet).filter(
+            or_(
+                Transaction.category.ilike(like),
+                Transaction.description.ilike(like),
+                Transaction.tx_type.ilike(like),
+                Wallet.name.ilike(like),
+            )
+        )
+    rows = rows.order_by(Transaction.tx_date.desc(), Transaction.id.desc())
+    if offset:
+        rows = rows.offset(offset)
+    if limit:
+        rows = rows.limit(limit)
+    return rows
+
+
+def transaction_count(user, query=""):
+    rows = (
+        Transaction.query.options(joinedload(Transaction.wallet))
+        .filter_by(user_id=user.id)
+    )
+    if query:
+        like = f"%{query}%"
+        rows = rows.outerjoin(Wallet).filter(
+            or_(
+                Transaction.category.ilike(like),
+                Transaction.description.ilike(like),
+                Transaction.tx_type.ilike(like),
+                Wallet.name.ilike(like),
+            )
+        )
+    return rows.count()
+
+
+def transaction_history(user, query="", page=1, per_page=5):
+    rows = transaction_rows(
+        user,
+        query=query,
+        limit=per_page,
+        offset=(page - 1) * per_page,
+    ).all()
     return [
         (
             tx.tx_date.strftime("%b %d, %Y"),
@@ -357,6 +579,24 @@ def transaction_history(user):
         )
         for tx in rows
     ]
+
+
+def safe_int(value, default):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def parse_date(value):
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y", "%b %d, %Y"):
+        try:
+            return datetime.strptime(value.strip(), fmt).date()
+        except ValueError:
+            continue
+    return None
 
 
 def wallets(user):
@@ -401,6 +641,32 @@ def category_icon(category, tx_type):
     return icons.get(category, "wallet")
 
 
+def investment_assets():
+    return {
+        "mutual_fund": {
+            "label": "Mutual Fund",
+            "rate": 0.085,
+            "icon": "landmark",
+            "description": "Diversified portfolio managed by experts",
+            "outlook": "Based on current trends, Mutual Funds are expected to yield 8-12% APR over the next decade.",
+        },
+        "gold": {
+            "label": "Gold",
+            "rate": 0.055,
+            "icon": "banknote",
+            "description": "Safe-haven commodity for stability",
+            "outlook": "Gold is modeled with steadier 4-7% APR growth and lower volatility.",
+        },
+        "crypto": {
+            "label": "Crypto",
+            "rate": 0.14,
+            "icon": "bitcoin",
+            "description": "High-growth digital asset volatility",
+            "outlook": "Crypto projection uses higher 14% APR potential, with higher risk and volatility.",
+        },
+    }
+
+
 def market_cards():
     return [
         ("BITCOIN (BTC/USD)", "$65,240.50", "+2.5%", "up"),
@@ -408,6 +674,14 @@ def market_cards():
         ("US 30Y TREASURY", "4.52%", "+0.05%", "up"),
         ("INDOGB 10Y BOND", "6.84%", "-0.02%", "down"),
     ]
+
+
+def filter_market_cards(query):
+    cards = market_cards()
+    if not query:
+        return cards
+    needle = query.lower()
+    return [card for card in cards if needle in card[0].lower()]
 
 
 def market_news():
@@ -433,8 +707,21 @@ def market_news():
     ]
 
 
-def calculate_investment_projection(initial, monthly, years):
-    annual_rate = 0.085
+def filter_market_news(query):
+    news = market_news()
+    if not query:
+        return news
+    needle = query.lower()
+    return [
+        item
+        for item in news
+        if any(needle in str(value).lower() for value in item)
+    ]
+
+
+def calculate_investment_projection(initial, monthly, years, asset="mutual_fund"):
+    assets = investment_assets()
+    annual_rate = assets.get(asset, assets["mutual_fund"])["rate"]
     balance = float(initial)
     rows = []
     labels = []

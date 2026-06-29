@@ -3,25 +3,33 @@
 {% block content %}
 {% set page_title = "Investment Simulator" %}
 {% set subtitle = "Project your future wealth based on market trends" %}
-{% set search = "Search markets..." %}
 {% include "app/_topbar.html" %}
 
 <section class="investment-types">
-  <article class="active"><span class="soft-icon green"><i data-lucide="landmark"></i></span><h2>Mutual Fund</h2><p>Diversified portfolio managed by experts</p></article>
-  <article><span class="soft-icon"><i data-lucide="banknote"></i></span><h2>Gold</h2><p>Safe-haven commodity for stability</p></article>
-  <article><span class="soft-icon"><i data-lucide="bitcoin"></i></span><h2>Crypto</h2><p>High-growth digital asset volatility</p></article>
+  {% for key, item in investment_assets.items() %}
+  <form method="post">
+    <input type="hidden" name="asset" value="{{ key }}">
+    <input type="hidden" name="initial" value="{{ initial }}">
+    <input type="hidden" name="monthly" value="{{ monthly }}">
+    <input type="hidden" name="years" value="{{ years }}">
+    <button class="investment-card-button" type="submit">
+      <article class="{{ 'active' if asset == key }}"><span class="soft-icon {{ 'green' if asset == key }}"><i data-lucide="{{ item.icon }}"></i></span><h2>{{ item.label }}</h2><p>{{ item.description }}</p></article>
+    </button>
+  </form>
+  {% endfor %}
 </section>
 
 <section class="investment-grid">
   <aside class="side-stack">
     <form class="panel parameters" method="post">
       <h2><i data-lucide="sliders-horizontal"></i>Parameters</h2>
+      <input type="hidden" name="asset" value="{{ asset }}">
       <label>Initial Investment Amount<input name="initial" value="{{ initial }}"></label>
       <label>Monthly Contribution <span>${{ monthly }}</span><input name="monthly" type="range" min="0" max="5000" value="{{ monthly }}"></label>
-      <label>Time Horizon (Years)<select name="years"><option selected>{{ years }} Years</option><option value="5">5 Years</option><option value="15">15 Years</option></select></label>
+      <label>Time Horizon (Years)<select name="years"><option value="5" {{ 'selected' if years == 5 }}>5 Years</option><option value="10" {{ 'selected' if years == 10 }}>10 Years</option><option value="15" {{ 'selected' if years == 15 }}>15 Years</option></select></label>
       <button class="btn btn-primary">Recalculate Projection</button>
     </form>
-    <div class="market-outlook"><strong>MARKET OUTLOOK</strong><p>Based on current trends, Mutual Funds are expected to yield 8-12% APR over the next decade.</p></div>
+    <div class="market-outlook"><strong>MARKET OUTLOOK</strong><p>{{ investment_assets[asset].outlook }}</p></div>
   </aside>
   <div>
     <article class="panel projection-panel">

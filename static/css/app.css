@@ -452,16 +452,31 @@ textarea {
   display: block;
 }
 
-.password-field svg,
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  color: #9aa8bb;
+  background: transparent;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  background: #eef4fa;
+  color: var(--ink);
+}
+
 .input-icon svg {
   position: absolute;
   top: 50%;
   color: #9aa8bb;
   transform: translateY(-50%);
-}
-
-.password-field svg {
-  right: 24px;
 }
 
 .input-icon svg {
@@ -488,14 +503,17 @@ textarea {
   min-height: 22px;
   padding: 0;
   border: 2px solid #cbd5e1;
-  border-radius: 50%;
+  border-radius: 6px;
   background: #fff;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
 .check-line input:checked {
   border-color: var(--green);
-  background: radial-gradient(circle, var(--green) 0 43%, #fff 45%);
+  background:
+    linear-gradient(45deg, transparent 53%, #fff 54% 64%, transparent 65%),
+    linear-gradient(-45deg, transparent 44%, #fff 45% 55%, transparent 56%),
+    var(--green);
 }
 
 .check-line input:active {
@@ -595,12 +613,16 @@ textarea {
   padding: 28px 18px 18px;
   border-right: 1px solid var(--line);
   background: #fff;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nav-menu {
   display: grid;
-  gap: 12px;
-  margin-top: 56px;
+  gap: 10px;
+  margin-top: 48px;
+  width: 100%;
+  min-width: 0;
 }
 
 .nav-menu a {
@@ -609,30 +631,34 @@ textarea {
   align-items: center;
   gap: 14px;
   min-height: 48px;
-  padding: 0 15px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 15px 0 18px;
   border-radius: 14px;
   color: #566176;
   font-weight: 750;
   overflow: hidden;
+  box-sizing: border-box;
   transition: color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
 .nav-menu a::before {
   content: "";
   position: absolute;
-  inset: 10px auto 10px 0;
+  left: 0;
+  top: 50%;
   width: 3px;
+  height: 24px;
   border-radius: 999px;
   background: var(--green);
   opacity: 0;
-  transform: scaleY(0.4);
+  transform: translateY(-50%) scaleY(0.4);
   transition: opacity 180ms ease, transform 180ms ease;
 }
 
 .nav-menu a:hover {
   color: var(--green);
   background: #f0fbf5;
-  transform: translateX(2px);
 }
 
 .nav-menu svg {
@@ -646,7 +672,7 @@ textarea {
 
 .nav-menu a.active::before {
   opacity: 1;
-  transform: scaleY(1);
+  transform: translateY(-50%) scaleY(1);
 }
 
 .sidebar-card {
@@ -677,9 +703,12 @@ textarea {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fbfdff;
+  min-width: 0;
 }
 
 .profile-mini > span,
@@ -720,6 +749,7 @@ textarea {
 }
 
 .profile-mini a {
+  position: relative;
   display: grid;
   place-items: center;
   width: 28px;
@@ -731,6 +761,30 @@ textarea {
 .profile-mini a:hover {
   background: #f1f5f9;
   transform: translateY(-1px);
+}
+
+.profile-action::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  padding: 6px 9px;
+  border-radius: 8px;
+  color: #fff;
+  background: #0e1b33;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.profile-action:hover::after,
+.profile-action:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .main-frame {
@@ -980,6 +1034,50 @@ textarea {
   gap: 18px;
 }
 
+.forecast-visual {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #d9f4e7;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f2fbf6, #ffffff);
+}
+
+.forecast-visual div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forecast-visual small {
+  color: #8ea0b6;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.forecast-visual strong {
+  color: #ff7a2f;
+  font-size: 18px;
+}
+
+.forecast-visual svg {
+  width: 100%;
+  height: 72px;
+}
+
+.forecast-area {
+  fill: rgba(7, 184, 111, 0.11);
+}
+
+.forecast-line-mini {
+  fill: none;
+  stroke: url(#forecastGradient);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
 .warning {
   display: grid;
   grid-template-columns: 30px 1fr;
@@ -1138,29 +1236,41 @@ textarea {
   font-weight: 850;
 }
 
+.tag-income,
+.tag-salary {
+  color: #064e3b;
+  background: #34d399;
+  border: 1px solid #10b981;
+}
+
 .tag-shopping {
-  color: #3f73db;
-  background: #dceafe;
+  color: #1e3a8a;
+  background: #93c5fd;
+  border: 1px solid #3b82f6;
 }
 
 .tag-food {
-  color: #e06f1d;
-  background: #ffe5c7;
+  color: #7c2d12;
+  background: #fdba74;
+  border: 1px solid #f97316;
 }
 
-.tag-salary {
-  color: #0da466;
-  background: #c9f6df;
+.tag-bills {
+  color: #581c87;
+  background: #c084fc;
+  border: 1px solid #9333ea;
 }
 
 .tag-groceries {
-  color: #9c51e0;
-  background: #efdafe;
+  color: #4c1d95;
+  background: #d8b4fe;
+  border: 1px solid #a855f7;
 }
 
 .tag-transport {
-  color: #0e91a0;
-  background: #c8f4f7;
+  color: #164e63;
+  background: #67e8f9;
+  border: 1px solid #06b6d4;
 }
 
 .side-stack {
@@ -1443,6 +1553,11 @@ textarea {
   gap: 20px;
 }
 
+.pager a {
+  color: #526074;
+  font-weight: 800;
+}
+
 .pager svg {
   width: 17px;
   color: #9aa8bb;
@@ -1535,6 +1650,25 @@ textarea {
   justify-content: space-between;
   margin: 0;
   color: #667085;
+}
+
+.scan-result small {
+  color: #8ea0b6;
+  line-height: 1.45;
+}
+
+.scan-result--empty {
+  border: 1px dashed #d8e2ee;
+}
+
+.scan-result--empty b {
+  color: #94a3b8;
+}
+
+.scanner-card .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  box-shadow: none;
 }
 
 .scanner-card .btn {
@@ -1734,25 +1868,53 @@ textarea {
   display: grid;
   place-items: center;
   height: 260px;
+  padding-top: 8px;
 }
 
-.gauge-arc {
-  width: 230px;
-  height: 115px;
-  border-radius: 230px 230px 0 0;
-  background: conic-gradient(from 270deg at 50% 100%, #0bb36c 0 32%, #facc15 32% 56%, #ef4444 56% 100%);
-  mask: radial-gradient(circle at 50% 100%, transparent 0 48%, #000 49%);
+.risk-gauge-svg {
+  width: min(260px, 100%);
+  height: 150px;
+  overflow: visible;
+}
+
+.risk-gauge-track,
+.risk-gauge-arc {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.risk-gauge-track {
+  stroke: #edf2f7;
+  stroke-width: 22;
+}
+
+.risk-gauge-arc {
+  stroke: url(#riskGradient);
+  stroke-width: 22;
+}
+
+.risk-gauge-needle {
+  stroke: #344054;
+  stroke-width: 5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.16));
+}
+
+.risk-gauge-pin {
+  fill: #344054;
+  stroke: #fff;
+  stroke-width: 4;
 }
 
 .risk-gauge strong {
   position: absolute;
-  bottom: 70px;
+  bottom: 56px;
   font-size: 36px;
 }
 
 .risk-gauge span {
   position: absolute;
-  bottom: 50px;
+  bottom: 36px;
   color: #ff7a2f;
   font-weight: 900;
 }
@@ -1962,6 +2124,14 @@ input[type="range"] {
   font-weight: 900;
 }
 
+.link-button {
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 900;
+}
+
 .wallet-list {
   display: grid;
   gap: 20px;
@@ -2101,6 +2271,51 @@ input[type="range"] {
   pointer-events: none;
   background: rgba(255, 255, 255, 0.42);
   transform: translate(-50%, -50%) scale(0);
+}
+
+.file-input {
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.dropzone .file-input {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  max-width: min(360px, calc(100vw - 48px));
+  padding: 14px 18px;
+  border: 1px solid #b7ecd1;
+  border-radius: 16px;
+  color: #047857;
+  background: #ecfdf5;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
+  font-weight: 800;
+}
+
+.investment-card-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
 }
 
 .btn-outline .ripple,
@@ -2269,15 +2484,19 @@ input[type="range"] {
   }
 
   .nav-menu {
-    gap: 8px;
-    margin-top: 44px;
+    gap: 10px;
+    margin-top: 40px;
   }
 
   .nav-menu a {
     min-height: 42px;
-    padding: 0 13px;
+    padding: 0 13px 0 17px;
     border-radius: 12px;
     font-size: 14px;
+  }
+
+  .nav-menu a::before {
+    height: 22px;
   }
 
   .nav-menu svg {
@@ -2299,7 +2518,7 @@ input[type="range"] {
   }
 
   .sidebar-card {
-    margin-top: 18px;
+    margin-top: auto;
     padding: 14px;
   }
 

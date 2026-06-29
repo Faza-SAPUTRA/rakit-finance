@@ -5,15 +5,15 @@
   </div>
   <div class="topbar-actions">
     {% if search %}
-      <label class="search-box"><i data-lucide="search"></i><input placeholder="{{ search }}"></label>
+      <form class="search-box" method="get" action="{{ search_action or request.path }}"><i data-lucide="search"></i><input name="q" value="{{ query or '' }}" placeholder="{{ search }}"></form>
     {% endif %}
     {% if export %}
-      <button class="btn btn-primary btn-small"><i data-lucide="download"></i> Export</button>
+      <a class="btn btn-primary btn-small" href="{{ export_url }}"><i data-lucide="download"></i> Export</a>
     {% endif %}
     {% if add %}
       <button class="btn btn-primary btn-small" data-open-modal="transaction-modal"><i data-lucide="plus"></i> Quick Add Transaction</button>
     {% endif %}
-    <button class="icon-btn"><i data-lucide="bell"></i></button>
+    <button class="icon-btn" type="button" data-toast="No new notifications."><i data-lucide="bell"></i></button>
     <span class="avatar"></span>
   </div>
 </header>

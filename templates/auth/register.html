@@ -14,14 +14,14 @@
     <p>Start your journey to financial freedom today.</p>
   </header>
   <form method="post" class="form-stack">
-    <label>Full Name<input name="name" placeholder="John Doe"></label>
-    <label>Email address<input name="email" type="email" placeholder="name@example.com"></label>
-    <label>Password<input name="password" type="password" value="password"><small>Must be at least 8 characters long.</small></label>
-    <label class="check-line"><input type="checkbox"> <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span></label>
+    <label>Full Name<input name="name" placeholder="John Doe" autocomplete="name" required></label>
+    <label>Email address<input name="email" type="email" placeholder="name@example.com" autocomplete="email" required></label>
+    <label>Password<span class="password-field"><input name="password" type="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" aria-label="Show password"><i data-lucide="eye"></i></button></span><small>Must be at least 8 characters long.</small></label>
+    <label class="check-line"><input name="terms" type="checkbox" required> <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span></label>
     <button class="btn btn-primary" type="submit">Create Account</button>
   </form>
   <div class="divider"><span>Or continue with</span></div>
-  <button class="btn btn-outline google-btn" type="button"><span class="google-g">G</span> Sign in with Google</button>
+  <a class="btn btn-outline google-btn" href="{{ url_for('google_demo') }}"><span class="google-g">G</span> Sign in with Google</a>
   <p class="switch-auth">Already have an account? <a href="{{ url_for('login') }}">Sign In</a></p>
 </div>
 {% endblock %}

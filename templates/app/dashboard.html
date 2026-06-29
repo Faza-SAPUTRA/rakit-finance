@@ -23,6 +23,20 @@
   </article>
   <aside class="panel forecast-panel">
     <h2>Smart Forecast</h2>
+    <div class="forecast-visual" aria-label="Projected spend trend">
+      <div><small>Forecast Trend</small><strong>+$120</strong></div>
+      <svg viewBox="0 0 240 72" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="forecastGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#07b86f"/>
+            <stop offset="65%" stop-color="#facc15"/>
+            <stop offset="100%" stop-color="#ff7a2f"/>
+          </linearGradient>
+        </defs>
+        <path class="forecast-area" d="M8 56 C48 34 72 46 104 28 C136 10 162 32 198 18 C216 11 228 13 236 9 L236 68 L8 68 Z"/>
+        <path class="forecast-line-mini" d="M8 56 C48 34 72 46 104 28 C136 10 162 32 198 18 C216 11 228 13 236 9"/>
+      </svg>
+    </div>
     <div class="warning"><i data-lucide="triangle-alert"></i><strong>Budget Warning</strong><span>You're projected to exceed your food budget by $120 next month.</span></div>
     <div class="progress-row"><span>Projected Spend</span><strong>$3,850.00</strong></div>
     <div class="progress"><b style="width:86%"></b></div>
@@ -44,7 +58,7 @@
     </table>
   </article>
   <aside class="side-stack">
-    <div class="goal-card"><h3>Savings Goal</h3><p>New Car Fund</p><strong>$12,000 <span>60%</span></strong><div class="progress light"><b style="width:60%"></b></div><small>On track to reach goal by Jan 2024</small></div>
+    <div class="goal-card"><h3>Savings Goal</h3><p>New Car Fund</p><strong>$12,000 <span>60%</span></strong><div class="progress light"><b style="width:60%"></b></div><small>On track to reach goal this year</small></div>
     <div class="insight-card"><i data-lucide="lightbulb"></i><h3>Smart Insight</h3><p>You spent 15% less on "Entertainment" this month compared to last. That's $145 more for your savings!</p></div>
   </aside>
 </section>
@@ -55,8 +69,8 @@
     <h2>Add New Transaction</h2>
     <input type="hidden" name="tx_type" value="expense">
     <div class="segmented"><button class="active" type="button">Expense</button><button type="button">Income</button></div>
-    <label class="amount-entry"><span>$</span><input name="amount" value="0.00" inputmode="decimal"></label>
-    <div class="two-fields"><label>Date<input name="tx_date" type="date" value="2023-10-25"></label><label>Category<select name="category"><option>Shopping</option><option>Food</option><option>Bills</option><option>Transport</option></select></label></div>
+    <label class="amount-entry"><span>$</span><input name="amount" value="0.00" inputmode="decimal" required></label>
+    <div class="two-fields"><label>Date<input name="tx_date" type="date" value="{{ today }}" required></label><label>Category<select name="category"><option>Shopping</option><option>Food</option><option>Bills</option><option>Transport</option><option>Income</option></select></label></div>
     <label>Account<select name="wallet_id">{% for wallet in wallets %}<option value="{{ wallet.id }}">{{ wallet.name }}</option>{% endfor %}</select></label>
     <label>Notes (Optional)<textarea name="description" placeholder="What was this for?"></textarea></label>
     <button class="btn btn-primary"><i data-lucide="check-circle"></i>Save Transaction</button>
@@ -72,7 +86,7 @@
     <div class="forecast-line red"><span>Food & Drink</span><b>90% &bull; $1,450.00</b><i></i></div>
     <div class="forecast-line green"><span>Utilities</span><b>45% &bull; $420.00</b><i></i></div>
     <div class="forecast-line blue"><span>Transport</span><b>30% &bull; $280.00</b><i></i></div>
-    <div class="ai-callout"><i data-lucide="sparkles"></i><span><strong>AI Recommendation</strong>Reduce dining out by $120 to hit your monthly savings goal</span><button class="btn btn-primary btn-small">Adjust Budgets</button></div>
+    <div class="ai-callout"><i data-lucide="sparkles"></i><span><strong>AI Recommendation</strong>Reduce dining out by $120 to hit your monthly savings goal</span><button class="btn btn-primary btn-small" type="button" data-close-modal data-toast="Budget recommendation applied.">Adjust Budgets</button></div>
   </div>
 </div>
 {% endblock %}

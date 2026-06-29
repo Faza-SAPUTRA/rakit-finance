@@ -23,6 +23,9 @@
     initSegmented(gsap);
     initInvestmentCards(gsap);
     initProgressBars(gsap);
+    initPasswordToggles();
+    initToasts(gsap);
+    initFileInputs();
     initCharts();
   });
 
@@ -281,6 +284,105 @@
         { scaleX: 1, duration: 0.85, ease: "power3.out", delay: 0.18 }
       );
       bar.style.width = width;
+    });
+  }
+
+  function initPasswordToggles() {
+    document.querySelectorAll(".password-toggle").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var input = button.parentElement.querySelector("input");
+        if (!input) return;
+        var hidden = input.type === "password";
+        input.type = hidden ? "text" : "password";
+        button.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+        if (window.lucide) window.lucide.createIcons();
+      });
+    });
+  }
+
+  function initToasts(gsap) {
+    document.querySelectorAll("[data-toast]").forEach(function (item) {
+      item.addEventListener("click", function () {
+        showToast(item.dataset.toast, gsap);
+      });
+    });
+  }
+
+  function showToast(message, gsap) {
+    if (!message) return;
+    var toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    if (gsap) {
+      gsap.fromTo(
+        toast,
+        { autoAlpha: 0, y: 16, scale: 0.96 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.25,
+          ease: "power3.out",
+          onComplete: function () {
+            gsap.to(toast, {
+              autoAlpha: 0,
+              y: 10,
+              duration: 0.25,
+              delay: 2.3,
+              onComplete: function () {
+                toast.remove();
+              },
+            });
+          },
+        }
+      );
+    } else {
+      window.setTimeout(function () {
+        toast.remove();
+      }, 2500);
+    }
+  }
+
+  function initFileInputs() {
+    document.querySelectorAll(".upload-box").forEach(function (form) {
+      var input = form.querySelector('input[type="file"]');
+      var button = form.querySelector("button[type='submit']");
+      if (!input || !button) return;
+      button.addEventListener("click", function (event) {
+        if (!input.files.length) {
+          event.preventDefault();
+          input.click();
+        }
+      });
+      input.addEventListener("change", function () {
+        if (input.files.length) form.requestSubmit();
+      });
+    });
+
+    document.querySelectorAll(".dropzone input[type='file']").forEach(function (input) {
+      input.addEventListener("change", function () {
+        var zone = input.closest(".dropzone");
+        var label = zone && zone.querySelector("span");
+        if (label && input.files.length) {
+          label.textContent = input.files[0].name;
+        }
+        var scanner = input.closest(".scanner-card");
+        if (scanner && input.files.length) {
+          var result = scanner.querySelector(".scan-result");
+          var button = scanner.querySelector('button[type="submit"]');
+          if (result) {
+            result.classList.remove("scan-result--empty");
+            result.innerHTML = [
+              "<strong>SCANNING RESULT</strong>",
+              "<p><span>Total Amount</span><b>$45.00</b></p>",
+              "<p><span>Date</span><b>Today</b></p>",
+              "<p><span>Merchant</span><b>Whole Foods</b></p>"
+            ].join("");
+          }
+          if (button) button.disabled = false;
+        }
+      });
     });
   }
 
