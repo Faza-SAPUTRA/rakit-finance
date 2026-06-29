@@ -599,7 +599,7 @@ textarea {
 
 .app-body {
   display: grid;
-  grid-template-columns: 242px 1fr;
+  grid-template-columns: 264px minmax(0, 1fr);
   min-height: 100vh;
   background: var(--bg);
 }
@@ -609,34 +609,44 @@ textarea {
   top: 0;
   display: flex;
   flex-direction: column;
+  width: 264px;
   min-height: 100vh;
-  padding: 28px 18px 18px;
+  height: 100vh;
+  max-height: 100vh;
+  padding: 28px 20px 20px;
   border-right: 1px solid var(--line);
   background: #fff;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-.nav-menu {
-  display: grid;
-  gap: 10px;
-  margin-top: 48px;
+.sidebar > * {
   width: 100%;
   min-width: 0;
+}
+
+.nav-menu {
+  display: grid;
+  gap: 8px;
+  margin-top: 42px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .nav-menu a {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  min-height: 48px;
+  gap: 13px;
+  min-height: 46px;
   width: 100%;
   max-width: 100%;
-  padding: 0 15px 0 18px;
-  border-radius: 14px;
+  padding: 0 14px 0 17px;
+  border-radius: 13px;
   color: #566176;
   font-weight: 750;
+  line-height: 1.2;
   overflow: hidden;
   box-sizing: border-box;
   transition: color 180ms ease, background 180ms ease, transform 180ms ease;
@@ -677,7 +687,8 @@ textarea {
 
 .sidebar-card {
   margin-top: auto;
-  padding: 18px;
+  padding: 16px;
+  border: 1px solid #edf2f7;
   border-radius: 14px;
   background: #f8fafc;
 }
@@ -704,7 +715,7 @@ textarea {
   align-items: center;
   gap: 12px;
   margin-top: 24px;
-  padding: 12px;
+  padding: 12px 13px;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: #fbfdff;
@@ -733,6 +744,8 @@ textarea {
 .profile-mini small {
   display: block;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-mini strong {
@@ -2460,16 +2473,19 @@ input[type="range"] {
   }
 
   .app-body {
-    grid-template-columns: 218px 1fr;
+    grid-template-columns: 264px minmax(0, 1fr);
   }
 
   .sidebar {
-    padding: 24px 14px 18px;
+    width: 264px;
+    padding: 24px 20px 20px;
     min-height: 100vh;
+    height: 100vh;
+    max-height: 100vh;
   }
 
   .brand {
-    font-size: 19px;
+    font-size: 18px;
   }
 
   .brand-mark {
@@ -2484,13 +2500,13 @@ input[type="range"] {
   }
 
   .nav-menu {
-    gap: 10px;
-    margin-top: 40px;
+    gap: 8px;
+    margin-top: 38px;
   }
 
   .nav-menu a {
-    min-height: 42px;
-    padding: 0 13px 0 17px;
+    min-height: 44px;
+    padding: 0 14px 0 17px;
     border-radius: 12px;
     font-size: 14px;
   }
@@ -2505,7 +2521,7 @@ input[type="range"] {
 
   .profile-mini {
     margin-top: 24px;
-    padding: 12px;
+    padding: 12px 13px;
     border: 1px solid var(--line);
     border-radius: 16px;
     background: #fbfdff;
@@ -2519,7 +2535,7 @@ input[type="range"] {
 
   .sidebar-card {
     margin-top: auto;
-    padding: 14px;
+    padding: 16px;
   }
 
   .main-frame {
@@ -2714,7 +2730,10 @@ input[type="range"] {
 
   .sidebar {
     position: static;
+    width: 100%;
     min-height: auto;
+    height: auto;
+    max-height: none;
   }
 
   .nav-menu {
