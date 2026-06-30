@@ -21,6 +21,15 @@ from sqlalchemy.orm import joinedload
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import Budget, Transaction, User, Wallet, db
+from services import (
+    CsvStatementImporter,
+    DashboardService,
+    FormParser,
+    InvestmentProjectionCalculator,
+    MarketDataService,
+    TransactionRepository,
+    WalletRepository,
+)
 
 
 load_dotenv()
@@ -136,13 +145,16 @@ def create_app():
     @login_required
     def dashboard():
         user = current_user()
+        dashboard_service = DashboardService(user)
+        wallet_repository = WalletRepository(user)
+        transaction_repository = TransactionRepository(user)
         return render_template(
             "app/dashboard.html",
             active_page="dashboard",
             user=user,
-            wallets=wallet_options(user),
-            transactions=recent_transactions(user),
-            stats=dashboard_stats(user),
+            wallets=wallet_repository.options(),
+            transactions=transaction_repository.recent_display_rows(),
+            stats=dashboard_service.stats(),
             today=date.today().isoformat(),
         )
 
@@ -150,13 +162,19 @@ def create_app():
     @login_required
     def transactions():
         user = current_user()
+        transaction_repository = TransactionRepository(user)
+        wallet_repository = WalletRepository(user)
         if request.method == "POST":
-            create_transaction_from_form(user, request.form)
+            try:
+                transaction_repository.create(request.form)
+                flash("Transaksi berhasil disimpan.")
+            except ValueError as exc:
+                flash(str(exc))
             return redirect(url_for("transactions"))
         query = request.args.get("q", "").strip()
-        page = max(safe_int(request.args.get("page"), 1), 1)
+        page = max(FormParser.integer(request.args.get("page"), 1), 1)
         per_page = 5
-        total = transaction_count(user, query=query)
+        total = transaction_repository.count(search=query)
         total_pages = max(1, ((total - 1) // per_page) + 1) if total else 1
         page = min(page, total_pages)
         start = ((page - 1) * per_page) + 1 if total else 0
@@ -165,7 +183,8 @@ def create_app():
             "app/transactions.html",
             active_page="transactions",
             user=user,
-            transactions=transaction_history(user, query=query, page=page, per_page=per_page),
+            transactions=transaction_repository.display_rows(search=query, page=page, per_page=per_page),
+            wallets=wallet_repository.options(),
             query=query,
             page=page,
             total=total,
@@ -175,12 +194,32 @@ def create_app():
             today=date.today().isoformat(),
         )
 
+    @app.post("/transactions/<int:transaction_id>/edit")
+    @login_required
+    def edit_transaction(transaction_id):
+        try:
+            TransactionRepository(current_user()).update(transaction_id, request.form)
+            flash("Transaksi berhasil diperbarui.")
+        except ValueError as exc:
+            flash(str(exc))
+        return redirect(url_for("transactions", q=request.args.get("q", ""), page=request.args.get("page", 1)))
+
+    @app.post("/transactions/<int:transaction_id>/delete")
+    @login_required
+    def delete_transaction(transaction_id):
+        try:
+            TransactionRepository(current_user()).delete(transaction_id)
+            flash("Transaksi berhasil dihapus.")
+        except ValueError as exc:
+            flash(str(exc))
+        return redirect(url_for("transactions", q=request.args.get("q", ""), page=request.args.get("page", 1)))
+
     @app.route("/transactions/export")
     @login_required
     def export_transactions():
         user = current_user()
         query = request.args.get("q", "").strip()
-        rows = transaction_rows(user, query=query, limit=None).all()
+        rows = TransactionRepository(user).export_rows(search=query)
         output = StringIO()
         writer = csv.writer(output)
         writer.writerow(["date", "type", "category", "description", "wallet", "amount"])
@@ -205,12 +244,13 @@ def create_app():
     @login_required
     def analytics():
         query = request.args.get("q", "").strip()
+        market_data = MarketDataService()
         return render_template(
             "app/analytics.html",
             active_page="analytics",
             user=current_user(),
-            market_cards=filter_market_cards(query),
-            news=filter_market_news(query),
+            market_cards=market_data.cards(query),
+            news=market_data.news(query),
             query=query,
         )
 
@@ -218,10 +258,11 @@ def create_app():
     @login_required
     def investment_sim():
         asset = request.form.get("asset", request.args.get("asset", "mutual_fund"))
-        initial = safe_int(request.form.get("initial"), 10000)
-        monthly = safe_int(request.form.get("monthly"), 500)
-        years = safe_int(request.form.get("years"), 10)
-        projection = calculate_investment_projection(initial, monthly, years, asset=asset)
+        initial = FormParser.integer(request.form.get("initial"), 10000)
+        monthly = FormParser.integer(request.form.get("monthly"), 500)
+        years = FormParser.integer(request.form.get("years"), 10)
+        calculator = InvestmentProjectionCalculator()
+        projection = calculator.calculate(initial, monthly, years, asset_key=asset)
         return render_template(
             "app/investment.html",
             active_page="investment",
@@ -231,7 +272,7 @@ def create_app():
             monthly=monthly,
             years=years,
             projection=projection,
-            investment_assets=investment_assets(),
+            investment_assets=calculator.asset_metadata(),
         )
 
     @app.route("/accounts", methods=["GET", "POST"])
@@ -239,40 +280,48 @@ def create_app():
     def accounts():
         user = current_user()
         if request.method == "POST":
-            create_transaction_from_form(user, request.form)
+            try:
+                TransactionRepository(user).create(request.form)
+                flash("Transaksi berhasil disimpan.")
+            except ValueError as exc:
+                flash(str(exc))
             return redirect(url_for("accounts"))
         return render_template(
             "app/accounts.html",
             active_page="accounts",
             user=user,
-            wallets=wallets(user),
+            wallets=WalletRepository(user).display_rows(),
             today=date.today().isoformat(),
         )
 
     @app.post("/accounts/wallets")
     @login_required
     def add_wallet():
-        user = current_user()
-        name = request.form.get("name", "").strip()
-        wallet_type = request.form.get("wallet_type", "bank")
         try:
-            balance = Decimal(str(request.form.get("balance", "0")).replace(",", ""))
-        except InvalidOperation:
-            balance = Decimal("0")
-        if not name:
-            flash("Nama wallet wajib diisi.")
-            return redirect(url_for("accounts"))
-        db.session.add(
-            Wallet(
-                user_id=user.id,
-                name=name,
-                wallet_type=wallet_type,
-                balance=balance,
-                currency="USD",
-            )
-        )
-        db.session.commit()
-        flash("Wallet berhasil ditambahkan.")
+            WalletRepository(current_user()).create(request.form)
+            flash("Wallet berhasil ditambahkan.")
+        except ValueError as exc:
+            flash(str(exc))
+        return redirect(url_for("accounts"))
+
+    @app.post("/accounts/wallets/<int:wallet_id>/edit")
+    @login_required
+    def edit_wallet(wallet_id):
+        try:
+            WalletRepository(current_user()).update(wallet_id, request.form)
+            flash("Wallet berhasil diperbarui.")
+        except ValueError as exc:
+            flash(str(exc))
+        return redirect(url_for("accounts"))
+
+    @app.post("/accounts/wallets/<int:wallet_id>/delete")
+    @login_required
+    def delete_wallet(wallet_id):
+        try:
+            WalletRepository(current_user()).delete(wallet_id)
+            flash("Wallet berhasil dihapus dari daftar aktif.")
+        except ValueError as exc:
+            flash(str(exc))
         return redirect(url_for("accounts"))
 
     @app.post("/accounts/import")
@@ -280,58 +329,21 @@ def create_app():
     def import_statement():
         user = current_user()
         upload = request.files.get("statement")
-        if not upload or not upload.filename:
-            flash("Pilih file CSV statement terlebih dahulu.")
-            return redirect(url_for("accounts"))
-        if not upload.filename.lower().endswith(".csv"):
-            flash("Import demo saat ini mendukung CSV. File .xlsx bisa ditambahkan nanti.")
-            return redirect(url_for("accounts"))
-
-        default_wallet = Wallet.query.filter_by(user_id=user.id).order_by(Wallet.id).first()
-        text = upload.stream.read().decode("utf-8-sig")
-        reader = csv.DictReader(StringIO(text))
-        imported = 0
-        for row in reader:
-            amount_raw = row.get("amount") or row.get("Amount") or "0"
-            try:
-                amount = Decimal(str(amount_raw).replace(",", ""))
-            except InvalidOperation:
-                continue
-            tx_type = (row.get("type") or row.get("Type") or "").lower()
-            if tx_type not in {"income", "expense"}:
-                tx_type = "income" if amount >= 0 else "expense"
-            amount = abs(amount)
-            tx_date = parse_date(row.get("date") or row.get("Date")) or date.today()
-            wallet = default_wallet
-            wallet_name = row.get("wallet") or row.get("Wallet")
-            if wallet_name:
-                wallet = Wallet.query.filter_by(user_id=user.id, name=wallet_name).first() or default_wallet
-            if not wallet:
-                continue
-            transaction = Transaction(
-                user_id=user.id,
-                wallet_id=wallet.id,
-                tx_type=tx_type,
-                category=row.get("category") or row.get("Category") or "Imported",
-                description=row.get("description") or row.get("Description") or "Imported transaction",
-                amount=amount,
-                tx_date=tx_date,
-            )
-            wallet.balance += amount if tx_type == "income" else -amount
-            db.session.add(transaction)
-            imported += 1
-        db.session.commit()
-        flash(f"{imported} transaksi berhasil diimport.")
+        try:
+            imported = CsvStatementImporter(user).import_file(upload)
+            flash(f"{imported} transaksi berhasil diimport.")
+        except ValueError as exc:
+            flash(str(exc))
         return redirect(url_for("accounts"))
 
     @app.post("/api/investment")
     def investment_api():
         payload = request.get_json(force=True)
-        projection = calculate_investment_projection(
-            safe_int(payload.get("initial"), 10000),
-            safe_int(payload.get("monthly"), 500),
-            safe_int(payload.get("years"), 10),
-            asset=payload.get("asset", "mutual_fund"),
+        projection = InvestmentProjectionCalculator().calculate(
+            FormParser.integer(payload.get("initial"), 10000),
+            FormParser.integer(payload.get("monthly"), 500),
+            FormParser.integer(payload.get("years"), 10),
+            asset_key=payload.get("asset", "mutual_fund"),
         )
         return jsonify(projection)
 

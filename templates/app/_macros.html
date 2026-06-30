@@ -1,0 +1,1 @@
+{% macro user_initial(user) -%}{{ user.name[:1] if user and user.name else "A" }}{%- endmacro %}

@@ -8,16 +8,29 @@
 <section class="accounts-grid">
   <div>
     <form class="upload-box" method="post" action="{{ url_for('import_statement') }}" enctype="multipart/form-data">
-      <span><i data-lucide="file-up"></i></span>
-      <h2>Upload Bank or E-Wallet Statement</h2>
-      <p>Drag and drop your .csv files here to sync your balances</p>
-      <input class="file-input" name="statement" type="file" accept=".csv,.xlsx" required>
-      <button class="btn btn-primary" type="submit">Browse Files</button>
+      <span class="upload-icon"><i data-lucide="file-up"></i></span>
+      <div class="upload-copy">
+        <h2>Upload Bank or E-Wallet Statement</h2>
+        <p>Import a CSV statement to sync balances and transaction history.</p>
+      </div>
+      <label class="upload-picker"><input class="file-input" name="statement" type="file" accept=".csv,.xlsx" required><i data-lucide="folder-open"></i>Choose CSV</label>
+      <small class="upload-file-name" data-file-name>No file selected</small>
+      <button class="btn btn-primary" type="submit">Import Statement</button>
     </form>
     <div class="wallet-head"><h2>Connected Wallets</h2><button class="link-button" type="button" data-open-modal="wallet-modal">+ Add New</button></div>
     <div class="wallet-list">
-      {% for icon, name, balance, tone, wallet_id in wallets %}
-      <article><span class="wallet-icon {{ tone }}"><i data-lucide="{{ icon }}"></i></span><div><h3>{{ name }}</h3><p>{{ balance|idr }}</p></div><b>&bull; ACTIVE</b></article>
+      {% for wallet in wallets %}
+      <article>
+        <span class="wallet-icon {{ wallet.tone }}"><i data-lucide="{{ wallet.icon }}"></i></span>
+        <div><h3>{{ wallet.name }}</h3><p>{{ wallet.balance|idr }}</p></div>
+        <div class="wallet-tools">
+          <b>&bull; ACTIVE</b>
+          <div class="wallet-actions">
+            <button class="icon-btn icon-btn--soft" type="button" data-open-modal="wallet-edit-{{ wallet.id }}" aria-label="Edit wallet"><i data-lucide="pencil"></i></button>
+            <button class="icon-btn icon-btn--danger" type="button" data-open-modal="wallet-delete-{{ wallet.id }}" aria-label="Delete wallet"><i data-lucide="trash-2"></i></button>
+          </div>
+        </div>
+      </article>
       {% endfor %}
     </div>
   </div>
@@ -25,13 +38,15 @@
     <form class="panel record-card" method="post">
       <h2><i data-lucide="circle-plus"></i>Record Transaction</h2>
       <input type="hidden" name="tx_type" value="expense">
-      <label>Select Wallet/Source<select name="wallet_id">{% for icon, name, balance, tone, wallet_id in wallets %}<option value="{{ wallet_id }}">{{ name }}</option>{% endfor %}</select></label>
+      <label>Select Wallet/Source<select name="wallet_id">{% for wallet in wallets %}<option value="{{ wallet.id }}">{{ wallet.name }}</option>{% endfor %}</select></label>
       <label>Amount<div class="currency-input"><span>USD</span><input name="amount" placeholder="0" inputmode="decimal"></div></label>
       <label>Category<select name="category"><option>Food</option><option>Transport</option><option>Shopping</option><option>Bills</option></select></label>
       <label>Date<input name="tx_date" type="date" value="{{ today }}" required></label>
       <label>Description<input name="description" placeholder="Manual transaction"></label>
-      <button class="btn btn-dark" type="button" data-toast="OCR upload prepared. Use the receipt scanner on Transactions to confirm a scanned receipt."><i data-lucide="receipt-text"></i>Upload Receipt (OCR)</button>
-      <button class="btn btn-primary" type="submit">Save Transaction</button>
+      <div class="record-actions">
+        <button class="btn btn-dark" type="button" data-toast="Receipt preview is a UI demo. Use Transactions to confirm placeholder receipt data."><i data-lucide="receipt-text"></i>Receipt Demo</button>
+        <button class="btn btn-primary" type="submit">Save Transaction</button>
+      </div>
     </form>
     <div class="limit-card"><div><strong>Daily Limit</strong><span>65% used</span></div><div class="progress light"><b style="width:65%"></b></div><h2>IDR 350,000 left</h2><p>Based on your monthly budget plan</p></div>
   </aside>
@@ -41,10 +56,34 @@
   <form class="modal-card" method="post" action="{{ url_for('add_wallet') }}">
     <button class="modal-close" type="button" data-close-modal><i data-lucide="x"></i></button>
     <h2>Add New Wallet</h2>
+    <p class="modal-subtitle">Create a user-owned wallet for bank or e-wallet transactions.</p>
     <label>Name<input name="name" placeholder="New Bank Account" required></label>
     <label>Type<select name="wallet_type"><option value="bank">Bank</option><option value="ewallet">E-Wallet</option></select></label>
     <label>Opening Balance<input name="balance" placeholder="0.00" inputmode="decimal"></label>
     <button class="btn btn-primary" type="submit">Save Wallet</button>
   </form>
 </div>
+
+{% for wallet in wallets %}
+<div class="modal-backdrop" id="wallet-edit-{{ wallet.id }}">
+  <form class="modal-card" method="post" action="{{ url_for('edit_wallet', wallet_id=wallet.id) }}">
+    <button class="modal-close" type="button" data-close-modal><i data-lucide="x"></i></button>
+    <h2>Edit Wallet</h2>
+    <p class="modal-subtitle">Update the wallet details and current balance.</p>
+    <label>Name<input name="name" value="{{ wallet.name }}" required></label>
+    <label>Type<select name="wallet_type"><option value="bank" {% if wallet.wallet_type == 'bank' %}selected{% endif %}>Bank</option><option value="ewallet" {% if wallet.wallet_type == 'ewallet' %}selected{% endif %}>E-Wallet</option></select></label>
+    <label>Current Balance<input name="balance" value="{{ '%.2f'|format(wallet.balance) }}" inputmode="decimal"></label>
+    <button class="btn btn-primary" type="submit">Update Wallet</button>
+  </form>
+</div>
+<div class="modal-backdrop" id="wallet-delete-{{ wallet.id }}">
+  <form class="modal-card confirm-modal" method="post" action="{{ url_for('delete_wallet', wallet_id=wallet.id) }}">
+    <button class="modal-close" type="button" data-close-modal><i data-lucide="x"></i></button>
+    <span class="confirm-icon"><i data-lucide="trash-2"></i></span>
+    <h2>Delete wallet?</h2>
+    <p>This will remove <strong>{{ wallet.name }}</strong> from your active wallet list. Existing transactions stay protected and the wallet will be archived when needed.</p>
+    <div class="confirm-actions"><button class="btn btn-outline" type="button" data-close-modal>Cancel</button><button class="btn btn-danger" type="submit"><i data-lucide="trash-2"></i>Delete</button></div>
+  </form>
+</div>
+{% endfor %}
 {% endblock %}

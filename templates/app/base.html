@@ -1,4 +1,5 @@
 <!doctype html>
+{% from "app/_macros.html" import user_initial %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -9,7 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
   </head>
-  <body class="app-body">
+  <body class="app-body is-loading">
+    <div class="loading-shell loading-shell--app" aria-hidden="true">
+      <aside class="loading-sidebar">
+        <span class="loading-brand"></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <div class="loading-sidebar-footer"><span></span><span></span></div>
+      </aside>
+      <main class="loading-main">
+        <div class="loading-topbar"><span></span><span></span></div>
+        <div class="loading-stats"><span></span><span></span><span></span></div>
+        <div class="loading-grid"><span></span><span></span></div>
+        <div class="loading-grid loading-grid--bottom"><span></span><span></span></div>
+      </main>
+    </div>
     <aside class="sidebar">
       <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark"><i data-lucide="wallet-cards"></i></span><span>Rakit Finance</span></a>
       <nav class="nav-menu">
@@ -19,12 +33,12 @@
         <a class="{{ 'active' if active_page == 'accounts' }}" href="{{ url_for('accounts') }}"><i data-lucide="wallet"></i>Accounts & Import</a>
         <a class="{{ 'active' if active_page == 'investment' }}" href="{{ url_for('investment_sim') }}"><i data-lucide="chart-line"></i>Investment Sim</a>
       </nav>
-      <div class="profile-mini"><span>{{ (user.name[:1] if user else "A") }}</span><div><strong>{{ user.name if user else "Alex Morgan" }}</strong><small>Premium Plan</small></div><a class="profile-action" href="{{ url_for('logout') }}" aria-label="Logout" data-tooltip="Logout"><i data-lucide="log-out"></i></a></div>
       <div class="sidebar-card">
         <strong>UPGRADE TO PRO</strong>
         <p>Get advanced analytics and insights.</p>
         <button class="btn btn-dark">Go Premium</button>
       </div>
+      <div class="profile-mini"><span>{{ user_initial(user) }}</span><div><strong>{{ user.name if user else "Alex Morgan" }}</strong><small>Premium Plan</small></div><a class="profile-action" href="{{ url_for('logout') }}" aria-label="Logout" data-tooltip="Logout"><i data-lucide="log-out"></i></a></div>
     </aside>
     <main class="main-frame">
       {% with messages = get_flashed_messages() %}
